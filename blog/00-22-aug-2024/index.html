@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/sunburst.css">
+    <link rel="stylesheet" href="/css/pygments-native.css">
+    <title>Welcome to Programming Reality | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Welcome to Programming Reality",
+        "datePublished": "2024-08-27 00:00:00",
+        "keywords": ["blog", "philosophy", "devops"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst"
+        }
+    }
+    </script>
+
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../..">Programming Reality</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="..">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="flex-grow-1 container mt-5 pt-5">
+        
+<div class="container">
+    <h1 class="mt-1 mb-4">Welcome to Programming Reality</h1>
+    <p class="text-muted">
+        <small>Published on August 27, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">blog</a>
+        
+        <a href="../../tags/philosophy" class="badge bg-secondary text-decoration-none link-light me-1">philosophy</a>
+        
+        <a href="../../tags/devops" class="badge bg-secondary text-decoration-none link-light me-1">devops</a>
+        
+    </div>
+    
+    <h1 id="project-overview">Project Overview</h1>
+<p>Welcome to my website and blog. Join me as I share my exploration of reality through the lens of language, and primarily machine-readable language.</p>
+<p>Read more about me <a class="internal-link" href="../../about">here</a>. <a class="internal-link" href="../../about">about</a></p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, World!&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>I will group my writing into three or more primary categories:</p>
+<p>1) My journey working on long-term projects. Posts in this category will be highly technical, and involve topics like computer programming, distributed systems, databases, networking, protocols and more.</p>
+<p>2) General musings on the "Nature of Reality". I'll typically tag these as "philosophy".</p>
+<p>3) Miscellaneous things I'm learning. I'll tag these as "did-you-know".</p>
+<p>I will kick off this journey by introducing my first long-term project: Building a "Personal Cloud", using Infrastructure as Code (IaC) tools and my best attempt at building something production-ready.</p>
+<p>This personal cloud is intended as a proof of concept of what a better future internet could look like. I'll eventually try to explain what I mean by a "better future internet", but for now, join me if you'd like to watch me struggle, grow, and hopefully build something useful for myself and others.</p>
+<p>This project aims to create a comprehensive, real-world microservices architecture, focusing on automation, scalability, and best practices in modern DevOps.</p>
+<h3 id="technical-goals">Technical Goals</h3>
+<h4 id="1-physical-server-setup">1. Physical Server Setup</h4>
+<ul>
+<li>Configure basic networking and access</li>
+<li>Implement initial security measures</li>
+</ul>
+<h4 id="2-ci-runner-setup">2. CI Runner Setup:</h4>
+<ul>
+<li>Install and configure a CI tool (likely <a class="external-link" href="https://www.drone.io/">Drone CI</a>)</li>
+<li>This CI runner will manage subsequent infrastructure deployments</li>
+</ul>
+<h4 id="3-infrastructure-as-code">3. Infrastructure as Code:</h4>
+<ul>
+<li>Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images</li>
+<li>Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning</li>
+<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking</li>
+<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration</li>
+</ul>
+<h4 id="4-core-services-deployment">4. Core Services Deployment:</h4>
+<ul>
+<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management</li>
+<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)</li>
+<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</li>
+</ul>
+<h4 id="5-advanced-orchestration">5. Advanced Orchestration:</h4>
+<ul>
+<li>Create a separate Nomad cluster for application workloads</li>
+<li>Potentially set up <a class="external-link" href="https://k3s.io/">K3s</a> (lightweight Kubernetes) within Nomad</li>
+</ul>
+<h4 id="6-network-and-security">6. Network and Security:</h4>
+<ul>
+<li>Implement ingress controllers and load balancers</li>
+<li>Set up network policies and firewalls</li>
+</ul>
+<h4 id="7-automation-and-scalability">7. Automation and Scalability:</h4>
+<ul>
+<li>Develop scripts and workflows for rapid cluster creation</li>
+<li>Implement auto-scaling and self-healing capabilities</li>
+</ul>
+<h3 id="learning-objectives">Learning Objectives</h3>
+<p>Why am I doing this? I'd like to learn these tools, and build something useful for myself and others. I have a large project in mind, and I will discuss it after I build the initial proof of concept "personal cloud".</p>
+<p>Put into dry bullet points, I'd like to:</p>
+<ul>
+<li>Gain hands-on experience with modern DevOps tools and practices</li>
+<li>Understand whether microservices architecture is a good fit for my project</li>
+<li>Develop skills in automation, security, and scalability in distributed systems</li>
+<li>Build something useful for myself and others</li>
+</ul>
+<h3 id="sharing-knowledge">Sharing Knowledge</h3>
+<p>Throughout this project, I will:</p>
+<ul>
+<li>Document each step in this developer journal or blog</li>
+<li>Create some guides and tutorials</li>
+<li>Share challenges faced and solutions implemented. I'd like to specificlaly share my perspective, from someone new to 
+    modern DevOps, though no stranger to software engineering.</li>
+<li>Possibly create video content</li>
+</ul>
+</div>
+
+    </main>
+
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="#" class="btn btn-outline-light btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="#" class="btn btn-outline-light btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class="btn btn-outline-light btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+            
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+</body>
+</html>

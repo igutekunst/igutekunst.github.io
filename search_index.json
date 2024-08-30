@@ -1,0 +1,42 @@
+[
+    {
+        "title": "nav",
+        "url": "/nav",
+        "tags": [],
+        "date": "2024-08-29"
+    },
+    {
+        "title": "Contact",
+        "url": "/contact",
+        "tags": [],
+        "date": "2024-08-29"
+    },
+    {
+        "title": "Programming Reality",
+        "url": "/",
+        "tags": [],
+        "date": "2024-08-22"
+    },
+    {
+        "title": "About",
+        "url": "/about",
+        "tags": [],
+        "date": "2024-08-29"
+    },
+    {
+        "title": "Welcome to Programming Reality",
+        "url": "/blog/00-22-aug-2024",
+        "tags": [
+            "blog",
+            "philosophy",
+            "devops"
+        ],
+        "date": "2024-08-27"
+    },
+    {
+        "title": "index",
+        "url": "/blog",
+        "tags": [],
+        "date": "2024-08-29"
+    }
+]
