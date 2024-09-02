@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >>
 <head>
 
     <meta charset="UTF-8">
@@ -26,9 +26,89 @@
     </script>
 
 </head>
+<script>
+(() => {
+  'use strict'
+
+  const getStoredTheme = () => {
+    console.log('Getting stored theme:', localStorage.getItem('theme'));
+    return localStorage.getItem('theme');
+  }
+  const setStoredTheme = theme => {
+    console.log('Setting stored theme:', theme);
+    localStorage.setItem('theme', theme);
+  }
+
+  const getPreferredTheme = () => {
+    const storedTheme = getStoredTheme()
+    if (storedTheme) {
+      return storedTheme
+    }
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    console.log('System prefers dark mode:', prefersDark);
+    return prefersDark ? 'dark' : 'light'
+  }
+
+  const setTheme = theme => {
+    console.log('Setting theme:', theme);
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(theme + '-theme');
+  }
+
+  const showActiveTheme = (theme, focus = false) => {
+    const darkModeToggle = document.querySelector('#darkModeToggle');
+    if (!darkModeToggle) {
+      console.log('Dark mode toggle button not found');
+      return;
+    }
+
+    console.log('Updating active theme UI:', theme);
+    const moonIcon = darkModeToggle.querySelector('svg path');
+    if (theme === 'dark') {
+      moonIcon.setAttribute('d', 'M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z');
+    } else {
+      moonIcon.setAttribute('d', 'M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278');
+    }
+
+    if (focus) {
+      darkModeToggle.focus()
+    }
+  }
+
+  const initialTheme = getPreferredTheme();
+  setTheme(initialTheme);
+  showActiveTheme(initialTheme);
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const storedTheme = getStoredTheme()
+    if (storedTheme !== 'light' && storedTheme !== 'dark') {
+      setTheme(getPreferredTheme())
+    }
+  })
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const darkModeToggle = document.querySelector('#darkModeToggle');
+    if (darkModeToggle) {
+      console.log('Dark mode toggle button found');
+      darkModeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        console.log('Toggling theme from', currentTheme, 'to', newTheme);
+        setStoredTheme(newTheme);
+        setTheme(newTheme);
+        showActiveTheme(newTheme, true);
+      });
+    } else {
+      console.log('Dark mode toggle button not found');
+    }
+  })
+})()
+</script>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
         <div class="container">
             <a class="navbar-brand" href="">Programming Reality</a>
             <input type="checkbox" id="navbarToggle" class="d-none">
@@ -50,12 +130,20 @@
                             <a class="nav-link" href="contact">Contact</a>
                         </li>
                         
+                    <li class="nav-item">
+                        <button id="darkModeToggle" class="btn nav-link" aria-label="Toggle dark mode">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
+                                <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+                                <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+                            </svg>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
     
-    <main class="flex-grow-1 container mt-5 pt-5">
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
         
 <div class="container">
     <h1 class="mt-1 mb-4">Programming Reality</h1>
@@ -63,18 +151,17 @@
         <small>Published on August 31, 2024</small>
     </p>
     
-    <h1 id="welcome">Welcome</h1>
-<p>Welcome to Programming Reality. This site is a collection of thoughts and ideas about the intersection of programming, philosophy, and spirituality.</p>
-<h2><h2 class="mt-4">Featured Posts</h2></h2><div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4 blog-summary">
-<div class="col"><div class="card h-100"><div class="card-body"><h5 class="card-title"><a class="text-decoration-none" href="2024-08-27-welcome-to-programming-reality">Welcome to Programming Reality</a></h5><p class="card-text text-muted small">August 27, 2024</p><p class="card-text"><div><h1 id="project-overview">Project Overview</h1>
-<p>Welcome to my website and blog. Join me as I share my exploration of reality through the lens of language, and primarily machine-readable language.</p></div></p><a class="btn btn-primary btn-sm" href="2024-08-27-welcome-to-programming-reality">Read more</a></div><div class="card-footer"><a class="badge bg-secondary text-decoration-none link-light me-1" href="/tags/blog">blog</a><a class="badge bg-secondary text-decoration-none link-light me-1" href="/tags/philosophy">philosophy</a><a class="badge bg-secondary text-decoration-none link-light me-1" href="/tags/devops">devops</a></div></div></div>
+    <p>Welcome to Programming Reality. This site is a collection of thoughts and ideas about the intersection of programming, philosophy, and spirituality.</p>
+<h2><h2 class="mt-4">Featured Posts</h2></h2><div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
+<div class="col"><div class="card h-100"><div class="card-body"><h4 class="card-title"><a class="text-decoration-none" href="2024-08-27-welcome-to-programming-reality">Welcome to Programming Reality</a></h4><p class="card-text text-muted small">August 27, 2024</p><div class="featured-post-summary"><div><h1 id="project-overview">Project Overview</h1>
+<p>Welcome to my website and blog. Join me as I share my exploration of reality through the lens of language, and primarily machine-readable language.</p></div></div><a class="btn btn-primary btn-sm" href="2024-08-27-welcome-to-programming-reality">Read more</a></div><div class="card-footer"><a class="badge bg-theme-secondary text-decoration-none me-1" href="tags/blog">#blog</a><a class="badge bg-theme-secondary text-decoration-none me-1" href="tags/philosophy">#philosophy</a><a class="badge bg-theme-secondary text-decoration-none me-1" href="tags/devops">#devops</a></div></div></div>
 </div>
     <div class="giscus"></div>
 </div>
 
     </main>
 
-    <footer class="bg-dark text-light mt-5 py-4">
+    <footer class="mt-auto py-4 bg-theme">
         <div class="container text-center">
             <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
             <p>Exploring the intersection of programming, philosophy, and spirituality.</p>

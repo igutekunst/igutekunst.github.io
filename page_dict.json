@@ -1,7 +1,7 @@
 {
     "/nav": {
         "title": "nav",
-        "date": "2024-09-01",
+        "date": "2024-09-02",
         "tags": [],
         "publish": true,
         "url": "/nav",
@@ -10,7 +10,7 @@
     },
     "/contact": {
         "title": "Contact",
-        "date": "2024-09-01",
+        "date": "2024-09-02",
         "tags": [],
         "publish": true,
         "url": "/contact",
@@ -24,11 +24,11 @@
         "publish": true,
         "url": "/",
         "path": "index.md",
-        "content": "# Welcome\n\nWelcome to Programming Reality. This site is a collection of thoughts and ideas about the intersection of programming, philosophy, and spirituality.\n\n\n\n## Featured Posts {: .featured-posts}\n - [[blog/00-welcome]]{: .featured-post}"
+        "content": "Welcome to Programming Reality. This site is a collection of thoughts and ideas about the intersection of programming, philosophy, and spirituality.\n\n\n\n## Featured Posts {: .featured-posts}\n - [[blog/00-welcome]]{: .featured-post}"
     },
     "/about": {
         "title": "About",
-        "date": "2024-09-01",
+        "date": "2024-09-02",
         "tags": [],
         "publish": true,
         "url": "/about",
@@ -50,7 +50,7 @@
     },
     "/blog": {
         "title": "index",
-        "date": "2024-09-01",
+        "date": "2024-09-02",
         "tags": [],
         "publish": true,
         "url": "/blog",
