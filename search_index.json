@@ -38,5 +38,18 @@
         "url": "/blog",
         "tags": [],
         "date": "2024-09-02"
+    },
+    {
+        "title": "Introduction to the Personal Microservices Infrastructure Project",
+        "url": "/2024-09-02-introduction-to-the-personal-microservices-infrastructure-project",
+        "tags": [
+            "devops",
+            "programming",
+            "kubernetes",
+            "hashicorp",
+            "terraform",
+            "homelab"
+        ],
+        "date": "2024-09-02"
     }
 ]

@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>Welcome to Programming Reality | Programming Reality</title>
+    <title>Introduction to the Personal Microservices Infrastructure Project | Programming Reality</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/bundle.css" rel="stylesheet">
     <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
@@ -15,9 +15,9 @@
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "Welcome to Programming Reality",
-        "datePublished": "2024-08-27 00:00:00",
-        "keywords": ["blog", "philosophy", "devops"],
+        "headline": "Introduction to the Personal Microservices Infrastructure Project",
+        "datePublished": "2024-09-02 00:00:00",
+        "keywords": ["devops", "programming", "kubernetes", "hashicorp", "terraform", "homelab"],
         "author": {
             "@type": "Person",
             "name": "Isaac Harrison Gutekunst"
@@ -146,27 +146,89 @@
     <main class="flex-grow-1 container mt-5 pt-5 mb-5">
         
 <div class="container">
-    <h1 class="mt-1 mb-4">Welcome to Programming Reality</h1>
+    <h1 class="mt-1 mb-4">Introduction to the Personal Microservices Infrastructure Project</h1>
     <p class="text-muted">
-        <small>Published on August 27, 2024</small>
+        <small>Published on September 02, 2024</small>
     </p>
     
     <div class="mb-4">
         
-        <a href="../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
-        
-        <a href="../tags/philosophy" class="badge bg-secondary text-decoration-none link-light me-1">#philosophy</a>
-        
         <a href="../tags/devops" class="badge bg-secondary text-decoration-none link-light me-1">#devops</a>
+        
+        <a href="../tags/programming" class="badge bg-secondary text-decoration-none link-light me-1">#programming</a>
+        
+        <a href="../tags/kubernetes" class="badge bg-secondary text-decoration-none link-light me-1">#kubernetes</a>
+        
+        <a href="../tags/hashicorp" class="badge bg-secondary text-decoration-none link-light me-1">#hashicorp</a>
+        
+        <a href="../tags/terraform" class="badge bg-secondary text-decoration-none link-light me-1">#terraform</a>
+        
+        <a href="../tags/homelab" class="badge bg-secondary text-decoration-none link-light me-1">#homelab</a>
         
     </div>
     
-    <p>Welcome to my website and blog. Join me as I share my exploration of reality through the lens of language, and primarily machine-readable language.</p>
-<p>I will group my writing into three or more primary categories:</p>
-<p>1) My journey working on long-term projects. Posts in this category will be highly technical, and involve topics like computer programming, distributed systems, databases, networking, protocols and more.</p>
-<p>2) General musings on the "Nature of Reality". I'll typically tag these as "philosophy".</p>
-<p>3) Miscellaneous things I'm learning. I'll tag these as "did-you-know".</p>
-<p>I will kick off this journey by introducing my first long-term project: Building a "Personal Cloud", using Infrastructure as Code (IaC) tools and my best attempt at building something production-ready.</p>
+    <p>Join me as I learn how to build a homelab suitable for playing with microserviecs infrastructure. I am building this to servce as the foundation of a "Personal Cloud." This personal cloud is intended as a proof of concept of what a better future internet could look like. </p>
+<h3 id="introduction">Introduction</h3>
+<p>This project aims to create a comprehensive, real-world microservices architecture, focusing on automation, scalability, and best practices in modern DevOps.</p>
+<p>I'll write developer journal entries as blog posts, as well as organize them into a more structured "how-to" documentation suitable for recreating the project or following along.</p>
+<p>As of now, I've done some preliminary research and have come up with this plan of action. As I go ahaed and my hands dirty, I imagine some of this plan will change, either slightly or dramatically as I learn from my mistakes and refine my understanding.</p>
+<h3 id="tentative-plan-of-action">Tentative Plan of Action</h3>
+<h4 id="1-physical-server-setup">1. Physical Server Setup</h4>
+<ul>
+<li>Configure basic networking and access</li>
+<li>Implement initial security measures</li>
+</ul>
+<h4 id="2-ci-runner-setup">2. CI Runner Setup:</h4>
+<ul>
+<li>Install and configure a CI tool (likely <a class="external-link" href="https://www.drone.io/">Drone CI</a>)</li>
+<li>This CI runner will manage subsequent infrastructure deployments</li>
+</ul>
+<h4 id="3-infrastructure-as-code">3. Infrastructure as Code:</h4>
+<ul>
+<li>Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images</li>
+<li>Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning</li>
+<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking</li>
+<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration</li>
+</ul>
+<h4 id="4-core-services-deployment">4. Core Services Deployment:</h4>
+<ul>
+<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management</li>
+<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)</li>
+<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</li>
+</ul>
+<h4 id="5-advanced-orchestration">5. Advanced Orchestration:</h4>
+<ul>
+<li>Create a separate Nomad cluster for application workloads</li>
+<li>Potentially set up <a class="external-link" href="https://k3s.io/">K3s</a> (lightweight Kubernetes) within Nomad</li>
+</ul>
+<h4 id="6-network-and-security">6. Network and Security:</h4>
+<ul>
+<li>Implement ingress controllers and load balancers</li>
+<li>Set up network policies and firewalls</li>
+</ul>
+<h4 id="7-automation-and-scalability">7. Automation and Scalability:</h4>
+<ul>
+<li>Develop scripts and workflows for rapid cluster creation</li>
+<li>Implement auto-scaling and self-healing capabilities</li>
+</ul>
+<h3 id="learning-objectives">Learning Objectives</h3>
+<p>Why am I doing this? I'd like to learn these tools, and build something useful for myself and others. I have a large project in mind, and I will discuss it after I build the initial proof of concept "personal cloud".</p>
+<p>Put into dry bullet points, I'd like to:</p>
+<ul>
+<li>Gain hands-on experience with modern DevOps tools and practices</li>
+<li>Understand whether microservices architecture is a good fit for my project</li>
+<li>Develop skills in automation, security, and scalability in distributed systems</li>
+<li>Build something useful for myself and others</li>
+</ul>
+<h3 id="sharing-knowledge">Sharing Knowledge</h3>
+<p>Throughout this project, I will:</p>
+<ul>
+<li>Document each step in this developer journal or blog</li>
+<li>Create some guides and tutorials</li>
+<li>Share challenges faced and solutions implemented. I'd like to specificlaly share my perspective, from someone new to 
+    modern DevOps, though no stranger to software engineering.</li>
+<li>Possibly create video content</li>
+</ul>
     <div class="giscus"></div>
 </div>
 
