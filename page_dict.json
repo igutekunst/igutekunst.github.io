@@ -24,16 +24,16 @@
         "publish": true,
         "url": "/",
         "path": "index.md",
-        "content": "Welcome to Programming Reality, a site about changing the nature of reality, one line of code at a time.\n\nI've spent over a decade working to build various computer systems, primarily for robotics, consumer electronics and aerospace. I've written code that is likely running in mars, running on a satelite orbiting overhead, running inside the headphones worn by millions of people, and running iny many more glamerous and not so glamerous environments.\n\n\n\n## Featured Posts {: .featured-posts}\n - [[blog/01-personal-infrastructure]]{: .featured-post}\n - [[blog/00-welcome]]{: .featured-post}"
+        "content": "Welcome to Programming Reality, a site about changing the nature of reality, one line of code at a time.\n\n\n\n## Featured Posts {: .featured-posts}\n - [[blog/01-personal-infrastructure]]{: .featured-post}\n - [[blog/00-welcome]]{: .featured-post}"
     },
-    "/about": {
+    "/2024-09-02-about": {
         "title": "About",
         "date": "2024-09-02",
         "tags": [],
         "publish": true,
-        "url": "/about",
+        "url": "/2024-09-02-about",
         "path": "about.md",
-        "content": "About this site...\n\nFoo"
+        "content": "I've spent over a decade working to build various computer systems, primarily for robotics, consumer electronics and aerospace. I've written code that is likely running in mars, running on a satelite orbiting overhead, running inside the headphones worn by millions of people, and running iny many more glamerous and not so glamerous environments."
     },
     "/2024-08-27-welcome-to-programming-reality": {
         "title": "Welcome to Programming Reality",
