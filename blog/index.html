@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >>
+<html lang="en">
 <head>
 
     <meta charset="UTF-8">
@@ -84,8 +84,12 @@
   const setTheme = theme => {
     console.log('Setting theme:', theme);
     document.documentElement.setAttribute('data-bs-theme', theme);
-    document.body.classList.remove('light-theme', 'dark-theme');
-    document.body.classList.add(theme + '-theme');
+    if (document.body) {
+      document.body.classList.remove('light-theme', 'dark-theme');
+      document.body.classList.add(theme + '-theme');
+    } else {
+      console.warn('Body element not available, theme classes not applied');
+    }
   }
 
   const showActiveTheme = (theme, focus = false) => {
@@ -131,6 +135,8 @@
         setTheme(newTheme);
         showActiveTheme(newTheme, true);
       });
+      // Set initial state of the toggle
+      showActiveTheme(getPreferredTheme());
     } else {
       console.log('Dark mode toggle button not found');
     }
