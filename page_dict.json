@@ -1,7 +1,7 @@
 {
     "/nav": {
         "title": "nav",
-        "date": "2024-09-14",
+        "date": "2024-09-15",
         "tags": [],
         "publish": true,
         "url": "/nav",
@@ -10,7 +10,7 @@
     },
     "/contact": {
         "title": "Contact Me",
-        "date": "2024-09-14",
+        "date": "2024-09-15",
         "tags": [],
         "publish": true,
         "url": "/contact",
@@ -28,7 +28,7 @@
     },
     "/about": {
         "title": "About",
-        "date": "2024-09-14",
+        "date": "2024-09-15",
         "tags": [],
         "publish": true,
         "url": "/about",
@@ -91,7 +91,7 @@
     },
     "/blog": {
         "title": "index",
-        "date": "2024-09-14",
+        "date": "2024-09-15",
         "tags": [],
         "publish": true,
         "url": "/blog",
