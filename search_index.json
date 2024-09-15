@@ -3,13 +3,13 @@
         "title": "nav",
         "url": "/nav",
         "tags": [],
-        "date": "2024-09-13"
+        "date": "2024-09-14"
     },
     {
-        "title": "Contact",
+        "title": "Contact Me",
         "url": "/contact",
         "tags": [],
-        "date": "2024-09-13"
+        "date": "2024-09-14"
     },
     {
         "title": "Programming Reality",
@@ -21,7 +21,7 @@
         "title": "About",
         "url": "/about",
         "tags": [],
-        "date": "2024-09-13"
+        "date": "2024-09-14"
     },
     {
         "title": "Welcome to Programming Reality",
@@ -34,14 +34,46 @@
         "date": "2024-08-27"
     },
     {
-        "title": "index",
-        "url": "/blog",
-        "tags": [],
+        "title": "Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation",
+        "url": "/2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation",
+        "tags": [
+            "blog",
+            "development",
+            "infrastructure",
+            "ansible"
+        ],
+        "date": "2024-09-15"
+    },
+    {
+        "title": "Personal Infrastructure Part 2: Setting up Secret Storage for Ansible",
+        "url": "/2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible",
+        "tags": [
+            "blog",
+            "development",
+            "infrastructure",
+            "ansible"
+        ],
+        "date": "2024-09-14"
+    },
+    {
+        "title": "Personal Infrastructure Part 1: Introduction and Basic Ansible Setup",
+        "url": "/2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup",
+        "tags": [
+            "blog",
+            "development",
+            "infrastructure"
+        ],
         "date": "2024-09-13"
     },
     {
-        "title": "Introduction to the Personal Microservices Infrastructure Project",
-        "url": "/2024-09-02-introduction-to-the-personal-microservices-infrastructure-project",
+        "title": "index",
+        "url": "/blog",
+        "tags": [],
+        "date": "2024-09-14"
+    },
+    {
+        "title": "Personal Microservices Infrastructure Project",
+        "url": "/2024-09-02-personal-microservices-infrastructure-project",
         "tags": [
             "devops",
             "programming",

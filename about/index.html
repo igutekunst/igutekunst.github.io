@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/bundle.css" rel="stylesheet">
     <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 
 
 
@@ -16,7 +19,7 @@
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "headline": "About",
-        "datePublished": "2024-09-13 14:34:09.437278",
+        "datePublished": "2024-09-14 17:32:03.667898",
         "keywords": [],
         "author": {
             "@type": "Person",
@@ -54,13 +57,13 @@
   const setTheme = theme => {
     console.log('Setting theme:', theme);
     document.documentElement.setAttribute('data-bs-theme', theme);
-    if (document.body) {
-      document.body.classList.remove('light-theme', 'dark-theme');
-      document.body.classList.add(theme + '-theme');
-    } else {
-      console.warn('Body element not available, theme classes not applied');
-    }
+  if (document.body) {
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(theme + '-theme');
+  } else {
+    console.warn('Body element not available, theme classes not applied');
   }
+}
 
   const showActiveTheme = (theme, focus = false) => {
     const darkModeToggle = document.querySelector('#darkModeToggle');
@@ -71,8 +74,9 @@
 
     console.log('Updating active theme UI:', theme);
     const moonIcon = darkModeToggle.querySelector('svg path');
+    setTheme(theme);
     if (theme === 'dark') {
-      moonIcon.setAttribute('d', 'M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z');
+      moonIcon.setAttribute('d', 'M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708');
     } else {
       moonIcon.setAttribute('d', 'M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278');
     }
@@ -92,6 +96,7 @@
       setTheme(getPreferredTheme())
     }
   })
+
 
   window.addEventListener('DOMContentLoaded', () => {
     const darkModeToggle = document.querySelector('#darkModeToggle');
@@ -114,15 +119,14 @@
 })()
 </script>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" data-base-path="../">
     <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="..">Programming Reality</a>
+            <a class="navbar-brand" href="../">Programming Reality</a>
             <input type="checkbox" id="navbarToggle" class="d-none">
             <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                     </svg>
                 </span>
             </label>
@@ -144,8 +148,7 @@
                     <li class="nav-item">
                         <button id="darkModeToggle" class="btn nav-link" aria-label="Toggle dark mode">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
-                                <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
-                                <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+                                <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
                             </svg>
                         </button>
                     </li>
@@ -156,14 +159,19 @@
     <main class="flex-grow-1 container mt-5 pt-5 mb-5">
         
 <div class="container">
+<article class="article mx-auto ">
     <h1 class="mt-1 mb-1">About</h1>
     <p class="text-muted">
-        <small>Published on September 13, 2024</small>
+        <small>Published on September 14, 2024</small>
     </p>
     
     <div class="pt-4">
-    <p>I've spent over a decade working to build various computer systems, primarily for robotics, consumer electronics and aerospace. I've written code that is likely running in mars, running on a satelite orbiting overhead, running inside the headphones worn by millions of people, and running iny many more glamerous and not so glamerous environments.</p>
+    <h1 id="about-the-site">About the Site</h1>
+<p>This is a personal website for Isaac Harrison Gutekunst. I've created this site to share my exploration of programming reality. The main focus of this is highly technical articles about computer programming, engineering, and <span class="wikilink unpublished">philosophy</span>. </p>
+<h2 id="content">Content</h2>
+<p>The site is structured primarily as a "blog", where I write about projects I am working on, or small pieces of knowledge I've acquired over time.</p>
     </div>
+</article>
     <div class="giscus"></div>
 </div>
 
