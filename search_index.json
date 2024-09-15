@@ -25,7 +25,7 @@
     },
     {
         "title": "Welcome to Programming Reality",
-        "url": "/2024-08-27-welcome-to-programming-reality",
+        "url": "/blog/2024-08-27-welcome-to-programming-reality",
         "tags": [
             "blog",
             "philosophy",
@@ -35,7 +35,7 @@
     },
     {
         "title": "Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation",
-        "url": "/2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation",
+        "url": "/blog/2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation",
         "tags": [
             "blog",
             "development",
@@ -46,7 +46,7 @@
     },
     {
         "title": "Personal Infrastructure Part 2: Setting up Secret Storage for Ansible",
-        "url": "/2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible",
+        "url": "/blog/2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible",
         "tags": [
             "blog",
             "development",
@@ -57,7 +57,7 @@
     },
     {
         "title": "Personal Infrastructure Part 1: Introduction and Basic Ansible Setup",
-        "url": "/2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup",
+        "url": "/blog/2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup",
         "tags": [
             "blog",
             "development",
@@ -73,7 +73,7 @@
     },
     {
         "title": "Personal Microservices Infrastructure Project",
-        "url": "/2024-09-02-personal-microservices-infrastructure-project",
+        "url": "/blog/2024-09-02-personal-microservices-infrastructure-project",
         "tags": [
             "devops",
             "programming",

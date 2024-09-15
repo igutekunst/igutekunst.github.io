@@ -6,6 +6,22 @@
     <title>Tag: programming | Programming Reality</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Tag: programming | Programming Reality">
+    <meta property="og:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
+    <meta property="og:image" content="../../og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="Tag: programming | Programming Reality">
+    <meta property="twitter:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
+    <meta property="twitter:image" content="/og-image.png">
+
+    <!-- Existing meta tags and links -->
     <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
@@ -17,94 +33,6 @@
 
 
 </head>
-<script>
-(() => {
-  'use strict'
-
-  const getStoredTheme = () => {
-    console.log('Getting stored theme:', localStorage.getItem('theme'));
-    return localStorage.getItem('theme');
-  }
-  const setStoredTheme = theme => {
-    console.log('Setting stored theme:', theme);
-    localStorage.setItem('theme', theme);
-  }
-
-  const getPreferredTheme = () => {
-    const storedTheme = getStoredTheme()
-    if (storedTheme) {
-      return storedTheme
-    }
-
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    console.log('System prefers dark mode:', prefersDark);
-    return prefersDark ? 'dark' : 'light'
-  }
-
-  const setTheme = theme => {
-    console.log('Setting theme:', theme);
-    document.documentElement.setAttribute('data-bs-theme', theme);
-  if (document.body) {
-    document.body.classList.remove('light-theme', 'dark-theme');
-    document.body.classList.add(theme + '-theme');
-  } else {
-    console.warn('Body element not available, theme classes not applied');
-  }
-}
-
-  const showActiveTheme = (theme, focus = false) => {
-    const darkModeToggle = document.querySelector('#darkModeToggle');
-    if (!darkModeToggle) {
-      console.log('Dark mode toggle button not found');
-      return;
-    }
-
-    console.log('Updating active theme UI:', theme);
-    const moonIcon = darkModeToggle.querySelector('svg path');
-    setTheme(theme);
-    if (theme === 'dark') {
-      moonIcon.setAttribute('d', 'M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708');
-    } else {
-      moonIcon.setAttribute('d', 'M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278');
-    }
-
-    if (focus) {
-      darkModeToggle.focus()
-    }
-  }
-
-  const initialTheme = getPreferredTheme();
-  setTheme(initialTheme);
-  showActiveTheme(initialTheme);
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    const storedTheme = getStoredTheme()
-    if (storedTheme !== 'light' && storedTheme !== 'dark') {
-      setTheme(getPreferredTheme())
-    }
-  })
-
-
-  window.addEventListener('DOMContentLoaded', () => {
-    const darkModeToggle = document.querySelector('#darkModeToggle');
-    if (darkModeToggle) {
-      console.log('Dark mode toggle button found');
-      darkModeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        console.log('Toggling theme from', currentTheme, 'to', newTheme);
-        setStoredTheme(newTheme);
-        setTheme(newTheme);
-        showActiveTheme(newTheme, true);
-      });
-      // Set initial state of the toggle
-      showActiveTheme(getPreferredTheme());
-    } else {
-      console.log('Dark mode toggle button not found');
-    }
-  })
-})()
-</script>
 
 <body class="d-flex flex-column min-vh-100" data-base-path="../../">
     <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
@@ -132,13 +60,6 @@
                             <a class="nav-link" href="../../contact">Contact</a>
                         </li>
                         
-                    <li class="nav-item">
-                        <button id="darkModeToggle" class="btn nav-link" aria-label="Toggle dark mode">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
-                                <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
-                            </svg>
-                        </button>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -152,7 +73,7 @@
 
         
         <article class="mb-5">
-            <h2 class="h3"><a href="../../2024-09-02-personal-microservices-infrastructure-project" class="text-decoration-none">Personal Microservices Infrastructure Project</a></h2>
+            <h2 class="h3"><a href="../../blog/2024-09-02-personal-microservices-infrastructure-project" class="text-decoration-none">Personal Microservices Infrastructure Project</a></h2>
             <p class="text-muted">
                 <time datetime="2024-09-02 00:00:00">September 02, 2024</time>
                 
@@ -173,7 +94,7 @@
                 
             </p>
             <p><p>Join me as I learn how to build a homelab suitable for playing with microservices infrastructure. I am building this to serve as the foundation of a "Personal Cloud." This personal cloud is intended as a proof of concept of what a better future internet could look like. </p></p>
-            <a href="../../2024-09-02-personal-microservices-infrastructure-project" class="btn btn-outline-primary btn-sm">Read more</a>
+            <a href="../../blog/2024-09-02-personal-microservices-infrastructure-project" class="btn btn-outline-primary btn-sm">Read more</a>
         </article>
         
     </div>
@@ -204,7 +125,6 @@
                 </a>
             </div>
         </div>
-
     </footer>
 
     <script src="../../js/bundle.js"></script>
