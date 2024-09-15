@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaac.cc/blog/2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation">
+    <meta property="og:title" content="Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation | Programming Reality">
+    <meta property="og:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
+    <meta property="og:image" content="../../og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation">
+    <meta property="twitter:title" content="Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation | Programming Reality">
+    <meta property="twitter:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
+    <meta property="twitter:image" content="/og-image.png">
+
+    <!-- Existing meta tags and links -->
+    <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation",
+        "url": "",
+        "datePublished": "2024-09-15 00:00:00",
+        "keywords": ["blog", "development", "infrastructure", "ansible"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst",
+            "url": "https://isaac.cc/about"
+        }
+    }
+    </script>
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-base-path="../../">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Programming Reality</a>
+            <input type="checkbox" id="navbarToggle" class="d-none">
+            <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    </svg>
+                </span>
+            </label>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
+        
+<div class="container">
+<article class="article mx-auto article-wide">
+    <h1 class="mt-1 mb-1">Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation</h1>
+    <p class="text-muted">
+        <small>Published on September 15, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
+        
+        <a href="../../tags/development" class="badge bg-secondary text-decoration-none link-light me-1">#development</a>
+        
+        <a href="../../tags/infrastructure" class="badge bg-secondary text-decoration-none link-light me-1">#infrastructure</a>
+        
+        <a href="../../tags/ansible" class="badge bg-secondary text-decoration-none link-light me-1">#ansible</a>
+        
+    </div>
+    
+    <div class="pt-4">
+    <p>In this post, I describe how I like to use Justfiles to make running common tasks easier.</p>
+<h2 id="1-justfile">1. Justfile:</h2>
+<p>I created a Justfile to streamline the setup and execution of various tasks in our project. </p>
+<p>Justfiles are simplified modern alternatives to Makefiles. Here's a quick overview of what our Justfile does:</p>
+<p>I prefer them for simple task execution that doesn't require the complexity and dependency resolution of Makefiles. I also like avoiding Makefile syntax whenever possible.</p>
+<p>The <code>Justfile</code> has recipes for the following:</p>
+<ul>
+<li>Creating and activating a virtual environment.</li>
+<li>Installing or verifying dependencies (Ansible and Cookiecutter).</li>
+<li>Generating a vault password for Ansible.</li>
+<li>Creating secrets for our infrastructure.</li>
+<li>Setting up the entire environment in one go.</li>
+<li>Running the Ansible playbook.</li>
+</ul>
+<p>The Justfile simplifies our workflow by encapsulating complex commands into simple, memorable recipes. For example, instead of remembering long command sequences, we can now just run <code>just setup</code> to prepare our environment or <code>just ansible_playbook</code> to execute our Ansible playbook.</p>
+<p>This approach not only saves time but also reduces the likelihood of errors, ensuring consistency across different development environments and making it easier for team members to contribute to the project.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Justfile</span>
+
+<span class="c1"># Set the shell to bash</span>
+<span class="n">set</span><span class="w"> </span><span class="n">shell</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;bash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-cu&quot;</span><span class="p">]</span>
+
+<span class="c1"># Define a variable for the virtual environment directory</span>
+<span class="n">venv_dir</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;venv&quot;</span>
+
+<span class="c1"># Recipe to create or activate the virtual environment</span>
+<span class="n">venv</span><span class="p">:</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="p">{{</span><span class="n">venv_dir</span><span class="p">}}</span><span class="w"> </span><span class="p">];</span><span class="w"> </span><span class="n">then</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">python3</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="n">venv</span><span class="w"> </span><span class="p">{{</span><span class="n">venv_dir</span><span class="p">}};</span><span class="w"> </span>\
+<span class="w">    </span><span class="n">fi</span>
+<span class="w">    </span><span class="o">.</span><span class="w"> </span><span class="p">{{</span><span class="n">venv_dir</span><span class="p">}}</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">activate</span>
+
+<span class="c1"># Recipe to install or verify Ansible and Cookiecutter are installed</span>
+<span class="n">install_dependencies</span><span class="p">:</span>
+<span class="w">    </span><span class="n">just</span><span class="w"> </span><span class="n">venv</span>
+<span class="w">    </span><span class="o">.</span><span class="w"> </span><span class="p">{{</span><span class="n">venv_dir</span><span class="p">}}</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">pip</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">ansible</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="nb nb-Type">null</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">then</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">ansible</span><span class="p">;</span><span class="w"> </span>\
+<span class="w">    </span><span class="k">else</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">echo</span><span class="w"> </span><span class="s2">&quot;Ansible is already installed&quot;</span><span class="p">;</span><span class="w"> </span>\
+<span class="w">    </span><span class="n">fi</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">pip</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">cookiecutter</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="nb nb-Type">null</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">then</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">cookiecutter</span><span class="p">;</span><span class="w"> </span>\
+<span class="w">    </span><span class="k">else</span><span class="w"> </span>\
+<span class="w">        </span><span class="n">echo</span><span class="w"> </span><span class="s2">&quot;Cookiecutter is already installed&quot;</span><span class="p">;</span><span class="w"> </span>\
+<span class="w">    </span><span class="n">fi</span>
+
+<span class="n">create_vault_password</span><span class="p">:</span>
+<span class="w">    </span><span class="n">python3</span><span class="w"> </span><span class="n">physical</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span><span class="o">/</span><span class="n">get_vault_pass</span><span class="o">.</span><span class="n">py</span><span class="w"> </span><span class="n">generate</span>
+
+<span class="n">create_secrets</span><span class="p">:</span>
+<span class="w">    </span><span class="n">python3</span><span class="w"> </span><span class="n">physical</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span><span class="o">/</span><span class="n">create_secrets</span><span class="o">.</span><span class="n">py</span><span class="w"> </span><span class="n">cir</span>
+
+<span class="c1"># Recipe to set up the environment (create venv and install dependencies)</span>
+<span class="n">setup</span><span class="p">:</span>
+<span class="w">    </span><span class="n">just</span><span class="w"> </span><span class="n">venv</span>
+<span class="w">    </span><span class="n">just</span><span class="w"> </span><span class="n">install_dependencies</span>
+<span class="w">    </span><span class="n">just</span><span class="w"> </span><span class="n">create_vault_password</span>
+
+<span class="c1"># Add more tasks as needed</span>
+
+
+<span class="n">ansible_playbook</span><span class="p">:</span>
+<span class="w">    </span><span class="n">just</span><span class="w"> </span><span class="n">setup</span>
+<span class="w">    </span><span class="n">cd</span><span class="w"> </span><span class="n">physical</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span><span class="w"> </span><span class="n">playbook</span><span class="o">.</span><span class="n">yml</span>
+
+<span class="n">ping</span><span class="p">:</span>
+<span class="w">    </span><span class="n">just</span><span class="w"> </span><span class="n">setup</span>
+<span class="w">    </span><span class="n">cd</span><span class="w"> </span><span class="n">physical</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">ansible</span><span class="o">-</span><span class="n">playbook</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ansible</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">inventory</span><span class="o">/</span><span class="n">hosts</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="n">ping</span>
+</code></pre></div>
+
+<h3 id="11-makefile">1.1 Makefile</h3>
+<p>To really push the automation to the next level, I made a Makefile that install <a class="external-link" href="https://github.com/casey/just">just</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Install Just</span>
+
+<span class="c1"># Detect the operating system</span>
+UNAME_S<span class="w"> </span>:<span class="o">=</span><span class="w"> </span><span class="k">$(</span>shell<span class="w"> </span>uname<span class="w"> </span>-s<span class="k">)</span>
+
+<span class="c1"># Default installation method (for unsupported systems)</span>
+install_just_default:
+<span class="w">    </span>@echo<span class="w"> </span><span class="s2">&quot;Unsupported operating system. Please install Just manually.&quot;</span>
+
+<span class="c1"># macOS installation</span>
+ifeq<span class="w"> </span><span class="o">(</span><span class="k">$(</span>UNAME_S<span class="k">)</span>,Darwin<span class="o">)</span>
+install_just:
+<span class="w">    </span>@if<span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>port<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>sudo<span class="w"> </span>port<span class="w"> </span>install<span class="w"> </span>just<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="k">elif</span><span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>brew<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>brew<span class="w"> </span>install<span class="w"> </span>just<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Neither MacPorts nor Homebrew is installed. Installing Homebrew...&quot;</span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$$</span><span class="s2">(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>brew<span class="w"> </span>install<span class="w"> </span>just<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="k">else</span>
+
+<span class="c1"># Debian-based Linux installation</span>
+ifeq<span class="w"> </span><span class="o">(</span><span class="k">$(</span>UNAME_S<span class="k">)</span>,Linux<span class="o">)</span>
+install_just:
+<span class="w">    </span>@if<span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>apt-get<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>curl<span class="w"> </span>--proto<span class="w"> </span><span class="s1">&#39;=https&#39;</span><span class="w"> </span>--tlsv1.2<span class="w"> </span>-sSf<span class="w"> </span>https://just.systems/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>bash<span class="w"> </span>-s<span class="w"> </span>--<span class="w"> </span>--to<span class="w"> </span>/usr/local/bin<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;This doesn&#39;t appear to be a Debian-based system. Please install Just manually.&quot;</span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="k">else</span>
+
+<span class="c1"># Fallback to default installation method</span>
+install_just:<span class="w"> </span>install_just_default
+
+endif
+endif
+
+.PHONY:<span class="w"> </span>install_just<span class="w"> </span>install_just_default
+</code></pre></div>
+
+<h2 id="next-steps-creating-initial-secrets-automatically">Next Steps: Creating initial secrets automatically</h2>
+<p>After I can store values securely, I'd like to automate the creation of initial random secrets used for various services.</p>
+<p>Read more about it in my post: <span class="wikilink unpublished" href="#">Personal Infrastructure Part 4: Creating and Storing Initial Secrets</span></p>
+    </div>
+</article>
+    <div class="giscus"></div>
+</div>
+
+    </main>
+
+    <footer class="mt-auto px-4 bg-theme pt-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="https://x.com/dancing_void" class="btn btn-outline-secondary btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="https://github.com/igutekunst" class="btn btn-outline-secondary btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class=" btn btn-outline-secondary btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+    
+
+    <script src="https://giscus.app/client.js"
+        data-repo="igutekunst/igutekunst.github.io"
+        data-repo-id="R_kgDOMqSlJQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOMqSlJc4CiInM"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+</body>
+</html>

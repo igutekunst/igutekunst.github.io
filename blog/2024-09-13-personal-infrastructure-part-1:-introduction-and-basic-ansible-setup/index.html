@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Personal Infrastructure Part 1: Introduction and Basic Ansible Setup | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaac.cc/blog/2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup">
+    <meta property="og:title" content="Personal Infrastructure Part 1: Introduction and Basic Ansible Setup | Programming Reality">
+    <meta property="og:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
+    <meta property="og:image" content="../../og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup">
+    <meta property="twitter:title" content="Personal Infrastructure Part 1: Introduction and Basic Ansible Setup | Programming Reality">
+    <meta property="twitter:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
+    <meta property="twitter:image" content="/og-image.png">
+
+    <!-- Existing meta tags and links -->
+    <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Personal Infrastructure Part 1: Introduction and Basic Ansible Setup",
+        "url": "",
+        "datePublished": "2024-09-13 00:00:00",
+        "keywords": ["blog", "development", "infrastructure"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst",
+            "url": "https://isaac.cc/about"
+        }
+    }
+    </script>
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-base-path="../../">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Programming Reality</a>
+            <input type="checkbox" id="navbarToggle" class="d-none">
+            <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    </svg>
+                </span>
+            </label>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
+        
+<div class="container">
+<article class="article mx-auto article-wide">
+    <h1 class="mt-1 mb-1">Personal Infrastructure Part 1: Introduction and Basic Ansible Setup</h1>
+    <p class="text-muted">
+        <small>Published on September 13, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
+        
+        <a href="../../tags/development" class="badge bg-secondary text-decoration-none link-light me-1">#development</a>
+        
+        <a href="../../tags/infrastructure" class="badge bg-secondary text-decoration-none link-light me-1">#infrastructure</a>
+        
+    </div>
+    
+    <div class="pt-4">
+    <p>In this first step, I'm going to build Ansible skeleton project and test connectivity.  I will explain the motivation, my existing setup, how I setup Ansible, and how I make the process a bit smoother and more secure.</p>
+<h1 id="introduction-and-motivation">Introduction and Motivation</h1>
+<p>Eventually I will build out <a class="wikilink internal-link" href="../2024-09-02-personal-microservices-infrastructure-project">Personal Microservices Infrastructure Project</a>. I will have a collection of files that given access to a handful of physical or virtual machines will "build" a complete foundation for a personal microservices project. To avoid moving too slowly, I will avoid trying to make any part of this process perfectly generic. It will work with my chosen hardware, software and 3rd party services. I will make some effort so that anyone following alone should be able to recreate something similar. </p>
+<h2 id="my-existing-setup">My Existing Setup</h2>
+<h3 id="hardware">Hardware</h3>
+<ul>
+<li><a class="external-link" href="https://protectli.com/vault-6-port/">Protectli Vault</a>, configured with 64GB RAM, and a Samsung 4TB SSD.</li>
+<li>AMD Threadripper desktop with 128GB RAM, and 8TB of SSD storage.</li>
+<li>Old MSI laptop with 16GB or RAM and 1 TB of SSD Storage</li>
+<li>Digital Ocean Intel SSD VM with 4GB of RAM and 100 GB or storage.</li>
+<li>Smaller Protectli Vault running pfSense</li>
+</ul>
+<h3 id="existing-use-cases">Existing Use Cases</h3>
+<p>Right now I host a few personal web services:</p>
+<ul>
+<li><a class="external-link" href="plex.tv">Plex</a></li>
+<li>My "spiritual" website: <a class="external-link" href="https://iamthatiam.org">i am that i am</a>, an "almost" static site that uses a bit of Django.</li>
+<li>A personal <a class="external-link" href="sentry.io">Sentry</a> instance.</li>
+<li>A personal <a class="external-link" href="jenkins.io">Jenkins</a> instance</li>
+<li>A <a class="external-link" href="https://plausible.io">Plausible Analytics</a> instance</li>
+<li>A few more</li>
+</ul>
+<h3 id="network-topology">Network Topology</h3>
+<p>All the physical hardware is connected via a gigabit switch behind pfSense router. The pfSense router is running a <a class="external-link" href="https://www.wireguard.com">Wireguard</a> server that I connect to with my roaming Mac laptop, and iPhone. All these servers are on the <code>10.0.0.0/24</code> subnet. All Wireguard clients are on the <code>10.2.0.0/24</code> subnet, with a specific tunnel for each one.</p>
+<p>My VM provided by Digital Ocean is running Debian 12. It has a permanent Wireguard tunnel back to the pfSense box. For this website, I will call this box <code>gateway</code>.</p>
+<p>I'ved named all three physical compute nodes after cats:</p>
+<ol>
+<li><a class="external-link" href="https://en.wikipedia.org/wiki/Aslan"><code>aslan</code></a> - AMD Threadripper system, and main computer node</li>
+<li><a class="external-link" href="https://en.wikipedia.org/wiki/Suns_in_alchemy"><code>green-lion</code></a> - Large Protectli vault</li>
+<li><a class="external-link" href="https://en.wikipedia.org/wiki/Bagheera"><code>bagheera</code></a> - Old MSI latop</li>
+</ol>
+<p>Click on the links to see a bit behind each name. I must confess, I'm not fully aware of the history of <code>green-lion</code> with the field of alchemy, so I hope it doesn't mean something terrible!</p>
+<p>These are running in containers manually deployed using <a class="external-link" href="https://docs.docker.com/compose/">Docker Compose</a>. Most of them are running on <code>aslan</code>, with some running in "high availability" mode, with containers running on both <code>aslan</code> and <code>green-lion</code>. An <a class="external-link" href="nginx.com">nginx</a> reverse proxy runs on <code>gateway</code> proxying traffic and terminating SSL using <a class="external-link" href="letsencrypt.org">Let's Encrypt</a>.</p>
+<p>I'd like to leave all of these services running with close to zero downtime, while deploying new services using increasingly more advanced techniques, culminating in a platform built on top of Kubernetes.</p>
+<p>To do so, I'm going to first get some automation in place to configure and manage these physical servers. Then I'll move the manual configuration of my existing service into Ansible, and then from there will setup CI using <a class="external-link" href="drone.io">Drone CI</a>.</p>
+<h1 id="installing-and-testing-ansible">Installing and testing Ansible</h1>
+<h2 id="what-is-ansible-why-am-i-using-it">What is Ansible. Why am I using it?</h2>
+<p>I've used Ansible a few times to deploy web applications and configure servers. I don't love the giant collection of templated YAML, and yet, it provides too much value to ignore.</p>
+<p>As described on their homepage:</p>
+<blockquote>
+<p>Ansible is an open source IT automation engine that automates provisioning, configuration management, application deployment, orchestration, and many other IT processes. It is free to use, and the project benefits from the experience and intelligence of its thousands of contributors.</p>
+</blockquote>
+<p>In my words, Ansible is a tool that let's you write YAML file that describe actions that should be taken on a collection of servers, including copying files, installing software and more. When structured and written well, Ansible "Playbooks" are <span class="wikilink unpublished">idempotent</span>, and repeatable.</p>
+<p>I'm going to be using ansible primarily to manage the physical servers before any additional infrastructure is in place.</p>
+<h2 id="requirements">Requirements</h2>
+<p>Before we can use ansible, we need passwordless sudo ssh access to all nodes.</p>
+<p>Repeat this step for all physical nodes that you wish to manage with Ansible. I'm going to target <code>aslan</code> and <code>green-lion</code> initially, and then maybe move onto <code>gateway</code> and <code>bagheera</code> later.</p>
+<h3 id="1-passwordless-sudo-ansible_user-account">1. Passwordless sudo ansible_user account</h3>
+<ol>
+<li>Create a new user named <code>ansible_user</code>:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>sudo adduser ansible_user
+</code></pre></div>
+
+<ol>
+<li>Give <code>ansible_user</code> sudo access without requiring a password:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>echo &quot;ansible_user ALL=(ALL) NOPASSWD:ALL&quot; | sudo tee /etc/sudoers.d/ansible_user
+</code></pre></div>
+
+<ol>
+<li>Set up SSH key authentication for <code>ansible_user</code>:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>sudo mkdir -p /home/ansible_user/.ssh
+sudo chmod 700 /home/ansible_user/.ssh
+sudo touch /home/ansible_user/.ssh/authorized_keys
+sudo chmod 600 /home/ansible_user/.ssh/authorized_keys
+</code></pre></div>
+
+<ol>
+<li>Copy your public SSH key into the <code>authorized_keys</code> file:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>sudo sh -c &#39;echo &quot;YOUR_PUBLIC_SSH_KEY&quot; &gt;&gt; /home/ansible_user/.ssh/authorized_keys&#39;
+</code></pre></div>
+
+<p>Replace <code>YOUR_PUBLIC_SSH_KEY</code> with your actual public SSH key.</p>
+<ol>
+<li>Set proper ownership for the <code>.ssh</code> directory and its contents:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>sudo chown -R ansible_user:ansible_user /home/ansible_user/.ssh
+</code></pre></div>
+
+<p>After completing these steps, you should be able to SSH into the server as <code>ansible_user</code> using your SSH key, and execute sudo commands without a password prompt.</p>
+<h3 id="2-ansible-installed-on-local-development-machine">2: Ansible installed on local development machine</h3>
+<p>To install Ansible on your local development machine, follow these steps:</p>
+<ol>
+<li>Create a virtual environment:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>ansible-venv
+</code></pre></div>
+
+<ol>
+<li>Activate the virtual environment:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="nb">source</span><span class="w"> </span>ansible-venv/bin/activate
+</code></pre></div>
+
+<ol>
+<li>Install Ansible within the virtual environment:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ansible
+</code></pre></div>
+
+<ol>
+<li>Verify the installation:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>ansible<span class="w"> </span>--version
+</code></pre></div>
+
+<p>This approach isolates Ansible and its dependencies in a dedicated environment, preventing conflicts with other Python packages on your system.</p>
+<h2 id="create-ansible-inventory-and-test-connectivity">Create Ansible inventory and test connectivity</h2>
+<p>Create the following files and directory structure</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>tree<span class="w"> </span>physical-server-ansible-playbook
+├──<span class="w"> </span>ansible.cfg
+├──<span class="w"> </span>inventory
+│<span class="w">   </span>└──<span class="w"> </span>hosts
+├──<span class="w"> </span>playbook.yml
+└──<span class="w"> </span>roles
+<span class="w">    </span>└──<span class="w"> </span>hello
+<span class="w">        </span>└──<span class="w"> </span>tasks
+<span class="w">            </span>└──<span class="w"> </span>main.yml
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code>cat<span class="w"> </span>ansible.cfg
+<span class="o">[</span>defaults<span class="o">]</span>
+<span class="nv">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>inventory/hosts
+<span class="nv">remote_user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ansible_user
+<span class="nv">private_key_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>~/.ssh/id_ed25519_aslan_ansible
+<span class="nv">host_key_checking</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>False
+<span class="nv">interpreter_python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>auto_silent
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="o">[</span>lz<span class="o">]</span>
+cat<span class="w"> </span>inventory/hosts
+aslan<span class="w"> </span><span class="nv">ansible_host</span><span class="o">=</span>aslan
+green-lion<span class="w"> </span><span class="nv">ansible_host</span><span class="o">=</span>green-lion
+
+<span class="o">[</span>all:vars<span class="o">]</span>
+<span class="nv">ansible_user</span><span class="o">=</span>ansible_user
+<span class="nv">ansible_ssh_private_key_file</span><span class="o">=</span>~/.ssh/id_ed25519_aslan_ansible
+</code></pre></div>
+
+<p>Of note, make sure the ssh key is correct in <code>ansible.cfg</code>. Also note that <code>host_key_checking = False</code> is a potential security risk. I'm running this on my home LAN so I think I'm good, but just be aware.</p>
+<p>I've called this group of servers the "lz" for landing zone. I'll continue the metaphor, as I "land" on a distant planet and begin "terraforming."</p>
+<p>To verify this is working you can run the ansible ping command</p>
+<div class="codehilite"><pre><span></span><code>ansible<span class="w"> </span>all<span class="w"> </span>-m<span class="w"> </span>ping<span class="w">                                                                                                                                                                                                                 </span>✘<span class="w"> </span><span class="m">1</span><span class="w"> </span>master<span class="w"> </span>⬆<span class="w"> </span>✱<span class="w"> </span>◼
+green-lion<span class="w"> </span><span class="p">|</span><span class="w"> </span>UNREACHABLE!<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;changed&quot;</span>:<span class="w"> </span>false,
+<span class="w">    </span><span class="s2">&quot;msg&quot;</span>:<span class="w"> </span><span class="s2">&quot;Failed to connect to the host via ssh: ansible_user@10.0.0.22: Permission denied (publickey).&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;unreachable&quot;</span>:<span class="w"> </span><span class="nb">true</span>
+<span class="o">}</span>
+aslan<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">SUCCESS</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;ansible_facts&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;discovered_interpreter_python&quot;</span>:<span class="w"> </span><span class="s2">&quot;/usr/bin/python3.11&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="s2">&quot;changed&quot;</span>:<span class="w"> </span>false,
+<span class="w">    </span><span class="s2">&quot;ping&quot;</span>:<span class="w"> </span><span class="s2">&quot;pong&quot;</span>
+<span class="o">}</span>
+</code></pre></div>
+
+<p>As you can see, my connectivity to <code>green-lion</code> is not correct. I'll go ahead and make the ansible user on <code>green-lion</code> and try again.</p>
+<div class="codehilite"><pre><span></span><code>ansible<span class="w"> </span>all<span class="w"> </span>-m<span class="w"> </span>ping<span class="w">                                                                                                                                                                                                                     </span>master<span class="w"> </span>⬆<span class="w"> </span>✱<span class="w"> </span>◼
+aslan<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">SUCCESS</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;ansible_facts&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;discovered_interpreter_python&quot;</span>:<span class="w"> </span><span class="s2">&quot;/usr/bin/python3.11&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="s2">&quot;changed&quot;</span>:<span class="w"> </span>false,
+<span class="w">    </span><span class="s2">&quot;ping&quot;</span>:<span class="w"> </span><span class="s2">&quot;pong&quot;</span>
+<span class="o">}</span>
+green-lion<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">SUCCESS</span><span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;ansible_facts&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;discovered_interpreter_python&quot;</span>:<span class="w"> </span><span class="s2">&quot;/usr/bin/python3.10&quot;</span>
+<span class="w">    </span><span class="o">}</span>,
+<span class="w">    </span><span class="s2">&quot;changed&quot;</span>:<span class="w"> </span>false,
+<span class="w">    </span><span class="s2">&quot;ping&quot;</span>:<span class="w"> </span><span class="s2">&quot;pong&quot;</span>
+<span class="o">}</span>
+</code></pre></div>
+
+<h2 id="next-steps">Next Steps</h2>
+<p>As you may be able to guess simply from the direction of this blog, I like automating things. In my next post I'll describe how a securely store secrets for usage within Ansible playbooks, and how I create initial random secrets usable for passwords and keys for deployed software.</p>
+<p>Read more in <a class="wikilink internal-link" href="../2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible">Personal Infrastructure Part 2: Setting up Secret Storage for Ansible</a>.</p>
+    </div>
+</article>
+    <div class="giscus"></div>
+</div>
+
+    </main>
+
+    <footer class="mt-auto px-4 bg-theme pt-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="https://x.com/dancing_void" class="btn btn-outline-secondary btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="https://github.com/igutekunst" class="btn btn-outline-secondary btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class=" btn btn-outline-secondary btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+    
+
+    <script src="https://giscus.app/client.js"
+        data-repo="igutekunst/igutekunst.github.io"
+        data-repo-id="R_kgDOMqSlJQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOMqSlJc4CiInM"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+</body>
+</html>
