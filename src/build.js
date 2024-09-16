@@ -16,10 +16,9 @@ async function buildCSS() {
     outputStyle: 'compressed'
   });
 
-  const sunburstCSS = fs.readFileSync('src/sunburst.css', 'utf8');
   const pygmentsNativeCSS = fs.readFileSync('src/pygments-native.css', 'utf8');
 
-  const combinedCSS = sassResult.css + sunburstCSS + pygmentsNativeCSS;
+  const combinedCSS = sassResult.css + pygmentsNativeCSS;
 
   // Get all HTML files in the output directory and its subdirectories
   function getAllHtmlFiles(dir) {
