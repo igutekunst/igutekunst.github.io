@@ -1,7 +1,7 @@
 {
     "/nav": {
         "title": "nav",
-        "date": "2024-09-15",
+        "date": "2024-09-16",
         "tags": [],
         "publish": true,
         "url": "/nav",
@@ -10,7 +10,7 @@
     },
     "/contact": {
         "title": "Contact Me",
-        "date": "2024-09-15",
+        "date": "2024-09-16",
         "tags": [],
         "publish": true,
         "url": "/contact",
@@ -28,7 +28,7 @@
     },
     "/about": {
         "title": "About",
-        "date": "2024-09-15",
+        "date": "2024-09-16",
         "tags": [],
         "publish": true,
         "url": "/about",
@@ -46,7 +46,7 @@
         "publish": true,
         "url": "/blog/2024-08-27-welcome-to-programming-reality",
         "path": "blog/00-welcome.md",
-        "content": "Welcome to my website and blog. Join me as I share my exploration of reality through the lens of language, and primarily machine-readable language.\n\nI will group my writing into three or more primary categories:\n\n1) My journey working on long-term projects. Posts in this category will be highly technical, and involve topics like computer programming, distributed systems, databases, networking, protocols and more.\n\n2) General musings on the \"Nature of Reality\". I'll typically tag these as \"philosophy\".\n\n3) Miscellaneous things I'm learning. I'll tag these as \"did-you-know\".\n\nI will kick off this journey by introducing my first long-term project: Building a \"Personal Cloud\", using Infrastructure as Code (IaC) tools and my best attempt at building something production-ready.\n\n## Programming Reality\n\nProgramming Reality as phrase is intended to evoke the idea that reality is flexible, and can be programmed with intention. People have always programmed reality with their words by telling stories. The stories we tell each other shape how we see the world, and perhaps even shape the structure of reality itself. In the current age, the programming is becoming more explicit and less occulted. People write computer programs that capture intentions, and then when placed into the right environment have real measurable affects on the physical world. I can tap my fingers on a piece of glass in a certain pattern and  30 minutes later, someone will bring food to my door. This is the magic of Uber Eats on an iPhone using the Internet.\n\n\n# About Me\nIn my professional career, I've spent over a decade working to build various computer systems, primarily for robotics, consumer electronics and aerospace. I've written code that is likely running in mars, running on a satellite orbiting overhead, running inside the headphones worn by millions of people, and running in many more glamorous and not so glamorous environments.\n\nPersonally, I've always been drawn to look closely at the inner workings of everything. I am drawn to understand how light bulbs function, and also why people go to war. I love looking at the structure of companies, families and societies big and small. I see patterns repeating at every level of abstraction, from the organization of ants, to the arrangement of code within a distributed system. \n\n## Why I'm Publishing this Site\n\nI love the world, and feel like sharing. I like building cool stuff! I think everything about life is amazing, and want to share that!\n\nI have so many ideas in my head that I love and want to see take physical form. I've decided to take the next step and start writing about them publicly."
+        "content": "[Read on Substack](https://programmingreality.substack.com/p/welcome-to-programming-reality)\n\n[Read on LinkedIn](https://www.linkedin.com/pulse/welcome-programming-reality-isaac-gutekunst-a02ic/)\n\nWelcome to my website and blog. Join me as I share my exploration of reality through the lens of language, and primarily machine-readable language.\n\nI will group my writing into three or more primary categories:\n\n1) My journey working on long-term projects. Posts in this category will be highly technical, and involve topics like computer programming, distributed systems, databases, networking, protocols and more.\n\n2) General musings on the \"Nature of Reality\". I'll typically tag these as \"philosophy\".\n\n3) Miscellaneous things I'm learning. I'll tag these as \"did-you-know\".\n\nI will kick off this journey by introducing my first long-term project: Building a \"Personal Cloud\", using Infrastructure as Code (IaC) tools and my best attempt at building something production-ready.\n\n## Programming Reality\n\nProgramming Reality as phrase is intended to evoke the idea that reality is flexible, and can be programmed with intention. People have always programmed reality with their words by telling stories. The stories we tell each other shape how we see the world, and perhaps even shape the structure of reality itself. In the current age, the programming is becoming more explicit and less occulted. People write computer programs that capture intentions, and then when placed into the right environment have real measurable affects on the physical world. I can tap my fingers on a piece of glass in a certain pattern and  30 minutes later, someone will bring food to my door. This is the magic of Uber Eats on an iPhone using the Internet.\n\n\n# About Me\nIn my professional career, I've spent over a decade working to build various computer systems, primarily for robotics, consumer electronics and aerospace. I've written code that is likely running in mars, running on a satellite orbiting overhead, running inside the headphones worn by millions of people, and running in many more glamorous and not so glamorous environments.\n\nPersonally, I've always been drawn to look closely at the inner workings of everything. I am drawn to understand how light bulbs function, and also why people go to war. I love looking at the structure of companies, families and societies big and small. I see patterns repeating at every level of abstraction, from the organization of ants, to the arrangement of code within a distributed system. \n\n## Why I'm Publishing this Site\n\nI love the world, and feel like sharing. I like building cool stuff! I think everything about life is amazing, and want to share that!\n\nI have so many ideas in my head that I love and want to see take physical form. I've decided to take the next step and start writing about them publicly."
     },
     "/blog/2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation": {
         "title": "Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation",
@@ -91,7 +91,7 @@
     },
     "/blog": {
         "title": "index",
-        "date": "2024-09-15",
+        "date": "2024-09-16",
         "tags": [],
         "publish": true,
         "url": "/blog",
