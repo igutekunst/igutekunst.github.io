@@ -11,8 +11,9 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://isaac.cc/blog/2024-09-02-personal-microservices-infrastructure-project">
     <meta property="og:title" content="Personal Microservices Infrastructure Project | Programming Reality">
-    <meta property="og:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
-    <meta property="og:image" content="https://isaac.cc/og-image.png">
+    <meta property="og:description" content="
+<p>Join me as I build a personal datacenter, a “homelab” suitable for playing with microservices infrastructure. This is the first chapter of a story where people reclaim their power from their digital lords, and grow into equal peers in the digital realm.</p>">
+    <meta property="og:image" content="https://isaac.ccimages/personal-cloud.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -87,6 +88,7 @@
     <h1 class="mt-1 mb-1">Personal Microservices Infrastructure Project</h1>
     <p class="text-muted">
         <small>Published on September 02, 2024</small>
+        | <small>Last updated on September 17, 2024</small>
     </p>
     
     <div class="mb-4">
@@ -106,10 +108,14 @@
     </div>
     
     <div class="pt-4">
-    <p>Join me as I learn how to build a homelab suitable for playing with microservices infrastructure. I am building this to serve as the foundation of a "Personal Cloud." This personal cloud is intended as a proof of concept of what a better future internet could look like. </p>
+    <p><img alt="Image of people building their own digital infrastructure" src="../../images/personal-cloud.png" /></p>
+<p>Join me as I build a personal datacenter, a “homelab” suitable for playing with microservices infrastructure. This is the first chapter of a story where people reclaim their power from their digital lords, and grow into equal peers in the digital realm.</p>
+<p>I am starting my portion of this journey by arranging computer and software components to build a datacenter to serve as the foundation of a "Personal Cloud." This personal cloud will create my own digital sovereign territory from which I can steward my information and define my interaction with my peers. This personal cloud is intended as a proof of concept of what a better internet could look like.</p>
 <h3 id="introduction">Introduction</h3>
+<p>There was a time when only a few wealthy people had books. There was a time when only a few people had telephones. There was a time when only a few people had computers. We are now in an era where many people have easy access to these modern information technologies. In this era, there are only a few people who have their own datacenter. Everything is in “the cloud”, a new form of digital feudalism reigns supreme. Most people life as serfs, graciously accepting the few crumbs of value that trickle down in the form of apps and services while those people controlling them accumulate wealth and power.</p>
+<h2 id="the-nitty-gritty">The Nitty Gritty</h2>
 <p>This project aims to create a comprehensive, real-world microservices architecture, focusing on automation, scalability, and best practices in modern DevOps.</p>
-<p>I'll write developer journal entries as blog posts, as well as organize them into a more structured "how-to" documentation suitable for recreating the project or following along.</p>
+<p>I'll write developer journal entries as blog posts, as well as organize them into a more structured "how-to" documentation suitable for recreating the project or following along. I’ll also write the occasional essay about the meaning and ‘philosophy’ motivating my actions. </p>
 <p>As of now, I've done some preliminary research and have come up with this plan of action. As I go ahead and my hands dirty, I imagine some of this plan will change, either slightly or dramatically as I learn from my mistakes and refine my understanding.</p>
 <h3 id="tentative-plan-of-action">Tentative Plan of Action</h3>
 <h4 id="1-physical-server-setup">1. Physical Server Setup</h4>
@@ -122,37 +128,35 @@
 <h4 id="2-ci-runner-setup">2. CI Runner Setup:</h4>
 <ul>
 <li>Install and configure a CI tool (likely <a class="external-link" href="https://www.drone.io/">Drone CI</a>)</li>
-<li>This CI runner will manage subsequent infrastructure deployments</li>
+<li>Migrate legacy services to Ansible, deployed by CI</li>
 <li>Automatically run Ansible on infrastructure code changes.</li>
 </ul>
-<h4 id="3-infrastructure-as-code">3. Infrastructure as Code:</h4>
-<ul>
-<li>Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images</li>
-<li>Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning</li>
-<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking</li>
-<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration</li>
-</ul>
-<h4 id="4-core-services-deployment">4. Core Services Deployment:</h4>
-<ul>
-<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management</li>
-<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)</li>
-<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</li>
-</ul>
-<h4 id="5-advanced-orchestration">5. Advanced Orchestration:</h4>
+<h4 id="3-core-services">3. Core Services</h4>
+<p>In this phase, I will deploy a small cluster of virtual machines that will host “core services” that will make deploying production services easier and more repeatable.
+   - Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images
+   - Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning
+   - Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking
+   - Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration
+   - Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management
+   - Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)
+   - Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</p>
+<h4 id="4-advanced-orchestration">4. Advanced Orchestration:</h4>
 <ul>
 <li>Create a separate Nomad cluster for application workloads</li>
 <li>Potentially set up <a class="external-link" href="https://k3s.io/">K3s</a> (lightweight Kubernetes) within Nomad</li>
 </ul>
-<h4 id="6-network-and-security">6. Network and Security:</h4>
+<h4 id="5-network-and-security">5. Network and Security:</h4>
 <ul>
 <li>Implement ingress controllers and load balancers</li>
 <li>Set up network policies and firewalls</li>
 </ul>
-<h4 id="7-automation-and-scalability">7. Automation and Scalability:</h4>
+<h4 id="6-automation-and-scalability">6. Automation and Scalability:</h4>
 <ul>
 <li>Develop scripts and workflows for rapid cluster creation</li>
 <li>Implement auto-scaling and self-healing capabilities</li>
 </ul>
+<h4 id="7-begin-deploying-services">7. Begin deploying Services</h4>
+<p>In this phase, I will begin with the working foundation to deploy modern applications that I’ve build in subsequent steps. From here I will begin to make this cloud more personal, and develop applications and services on top of it that are valuable to me, and demonstrate the value of a personal cloud.</p>
 <h3 id="learning-objectives">Learning Objectives</h3>
 <p>Why am I doing this? I'd like to learn these tools, and build something useful for myself and others. I have a large project in mind, and I will discuss it after I build the initial proof of concept "personal cloud".</p>
 <p>Put into dry bullet points, I'd like to:</p>
