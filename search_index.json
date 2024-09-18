@@ -12,6 +12,15 @@
         "date": "2024-09-17"
     },
     {
+        "title": "Deploying Django to Digital Ocean",
+        "url": "/./2024-09-17-deploying-django-to-digital-ocean",
+        "tags": [
+            "devops",
+            "django"
+        ],
+        "date": "2024-09-17"
+    },
+    {
         "title": "Programming Reality",
         "url": "/",
         "tags": [],

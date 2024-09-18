@@ -3,22 +3,21 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>Contact Me | Programming Reality</title>
+    <title>Deploying Django to Digital Ocean | Programming Reality</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/bundle.css" rel="stylesheet">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://isaac.cc/contact">
-    <meta property="og:title" content="Contact Me | Programming Reality">
-    <meta property="og:description" content="Connect With Me
-You can connect with me in a few ways:">
+    <meta property="og:url" content="https://isaac.cc/./2024-09-17-deploying-django-to-digital-ocean">
+    <meta property="og:title" content="Deploying Django to Digital Ocean | Programming Reality">
+    <meta property="og:description" content="Although not strictly part of the [[01-personal-infrastructure]] series, this blog post will discuss building and deploying a basic Django application.">
     <meta property="og:image" content="https://isaac.cc//og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://isaac.cc/contact">
-    <meta property="twitter:title" content="Contact Me | Programming Reality">
+    <meta property="twitter:url" content="https://isaac.cc/./2024-09-17-deploying-django-to-digital-ocean">
+    <meta property="twitter:title" content="Deploying Django to Digital Ocean | Programming Reality">
     <meta property="twitter:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
     <meta property="twitter:image" content="https://isaac.cc//og-image.png">
 
@@ -35,10 +34,10 @@ You can connect with me in a few ways:">
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "headline": "Contact Me",
+        "headline": "Deploying Django to Digital Ocean",
         "url": "",
-        "datePublished": "2024-09-17 20:31:33.106966",
-        "keywords": [],
+        "datePublished": "2024-09-17 00:00:00",
+        "keywords": ["devops", "django"],
         "author": {
             "@type": "Person",
             "name": "Isaac Harrison Gutekunst",
@@ -74,7 +73,7 @@ You can connect with me in a few ways:">
                         </li>
                     
                         <li class="nav-item">
-                            <a class="nav-link" href="">Contact</a>
+                            <a class="nav-link" href="../contact">Contact</a>
                         </li>
                         
                 </ul>
@@ -85,19 +84,46 @@ You can connect with me in a few ways:">
         
 <div class="container">
 <article class="article mx-auto ">
-    <h1 class="mt-1 mb-1">Contact Me</h1>
+    <h1 class="mt-1 mb-1">Deploying Django to Digital Ocean</h1>
     <p class="text-muted">
         <small>Published on September 17, 2024</small>
         | <small>Last updated on September 17, 2024</small>
     </p>
     
+    <div class="mb-4">
+        
+        <a href="../tags/devops" class="badge bg-secondary text-decoration-none link-light me-1">#devops</a>
+        
+        <a href="../tags/django" class="badge bg-secondary text-decoration-none link-light me-1">#django</a>
+        
+    </div>
+    
     <div class="pt-4">
-    <h1 id="connect-with-me">Connect With Me</h1>
-<p>You can connect with me in a few ways:</p>
-<ul>
-<li>Connect on <a class="external-link" href="https://matrix.org">Matrix</a> <a class="external-link" href="https://matrix.to/#/@isaac:iamthatiam.org">@isaac:iamthatiam.org</a></li>
-<li>Comment on this or any page</li>
-</ul>
+    <p>Although not strictly part of the <span class="wikilink unpublished">01-personal-infrastructure</span> series, this blog post will discuss building and deploying a basic Django application.</p>
+<p>Secrets:
+- Postgres
+- Django admin
+- Django token
+- SSH Keys
+- Ansible Vault Password</p>
+<p>Ansible</p>
+<p>2 Docker Images
+- Nginx
+- Django</p>
+<p>Questions:</p>
+<p>Should .env file be backed into container? No
+ - Can be loaded by  <code>compose.yaml</code>
+ - Possibly store in ansible vault, then copied to production box</p>
+<p>What server deploys to production
+Probably a DroneCI runner. It will need an SSH deploy key to prod DO box.</p>
+<p>Digital Ocean Load Balancer
+DO Box, with docker compose situation. This has nginx, postgres, celery etc.</p>
+<p>Should I pay DO for a managed database? Probably</p>
+<p>What does local development look like?</p>
+<p>There will be a a few environments: 
+- Fully local with sqlite
+- Local in compose (possibly should add a DNS situation and run through <code>gateway</code>)
+-</p>
     </div>
 </article>
     <div class="giscus"></div>
