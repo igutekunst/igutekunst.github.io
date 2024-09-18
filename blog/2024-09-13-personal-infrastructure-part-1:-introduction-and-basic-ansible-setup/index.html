@@ -87,7 +87,7 @@
     <h1 class="mt-1 mb-1">Personal Infrastructure Part 1: Introduction and Basic Ansible Setup</h1>
     <p class="text-muted">
         <small>Published on September 13, 2024</small>
-        | <small>Last updated on September 13, 2024</small>
+        | <small>Last updated on September 17, 2024</small>
     </p>
     
     <div class="mb-4">
@@ -132,7 +132,11 @@
 <li><a class="external-link" href="https://en.wikipedia.org/wiki/Suns_in_alchemy"><code>green-lion</code></a> - Large Protectli vault</li>
 <li><a class="external-link" href="https://en.wikipedia.org/wiki/Bagheera"><code>bagheera</code></a> - Old MSI latop</li>
 </ol>
-<p>Click on the links to see a bit behind each name. I must confess, I'm not fully aware of the history of <code>green-lion</code> with the field of alchemy, so I hope it doesn't mean something terrible!</p>
+<p>Click on the links to see a bit behind each name. I must confess, I'm not fully aware of the history of <code>green-lion</code> within the field of alchemy, so I hope it doesn't mean something terrible!</p>
+<p>According to ChatGPT:</p>
+<blockquote>
+<p>In essence, the Green Lion is a metaphor for transformation, representing both the destructive and creative forces in alchemy.</p>
+</blockquote>
 <p>These are running in containers manually deployed using <a class="external-link" href="https://docs.docker.com/compose/">Docker Compose</a>. Most of them are running on <code>aslan</code>, with some running in "high availability" mode, with containers running on both <code>aslan</code> and <code>green-lion</code>. An <a class="external-link" href="nginx.com">nginx</a> reverse proxy runs on <code>gateway</code> proxying traffic and terminating SSL using <a class="external-link" href="letsencrypt.org">Let's Encrypt</a>.</p>
 <p>I'd like to leave all of these services running with close to zero downtime, while deploying new services using increasingly more advanced techniques, culminating in a platform built on top of Kubernetes.</p>
 <p>To do so, I'm going to first get some automation in place to configure and manage these physical servers. Then I'll move the manual configuration of my existing service into Ansible, and then from there will setup CI using <a class="external-link" href="drone.io">Drone CI</a>.</p>
@@ -282,6 +286,109 @@ green-lion<span class="w"> </span><span class="p">|</span><span class="w"> </spa
 <h2 id="next-steps">Next Steps</h2>
 <p>As you may be able to guess simply from the direction of this blog, I like automating things. In my next post I'll describe how a securely store secrets for usage within Ansible playbooks, and how I create initial random secrets usable for passwords and keys for deployed software.</p>
 <p>Read more in <a class="wikilink internal-link" href="../2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible">Personal Infrastructure Part 2: Setting up Secret Storage for Ansible</a>.</p>
+<h2 id="untested-sketchy-scripts">Untested Sketchy Scripts</h2>
+<p>I made a script for setting up the Ansible user on a remote machine. This assumes that you have SSH access to an account with sudo permissions on the remote server.</p>
+<p>This may break for various reasons, but it has worked for me.</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
+
+<span class="k">def</span> <span class="nf">run_ssh_command</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">control_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_sudo</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">ssh_command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ssh&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">control_path</span><span class="p">:</span>
+        <span class="n">ssh_command</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-S&#39;</span><span class="p">,</span> <span class="n">control_path</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">use_sudo</span><span class="p">:</span>
+        <span class="n">full_command</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sudo -S bash -c &#39;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">full_command</span> <span class="o">=</span> <span class="n">command</span>
+
+    <span class="n">ssh_command</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">hostname</span><span class="p">,</span> <span class="n">full_command</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">use_sudo</span><span class="p">:</span>
+        <span class="n">sudo_password</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Enter sudo password for </span><span class="si">{</span><span class="n">hostname</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">)</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">ssh_command</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">sudo_password</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">ssh_command</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error running command: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remote host stderr output:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">stderr</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">ssh_command</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">get_ssh_keys</span><span class="p">():</span>
+    <span class="n">ssh_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/.ssh&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">ssh_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.pub&quot;</span><span class="p">)]</span>
+
+<span class="k">def</span> <span class="nf">prompt_for_ssh_key</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available SSH public keys:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">choice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Select the number of the SSH key to use: &quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">keys</span><span class="p">[</span><span class="n">choice</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">check_user_exists</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">control_path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">run_ssh_command</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="s1">&#39;id -u ansible_user&#39;</span><span class="p">,</span> <span class="n">control_path</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">check_sudo_permissions</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">control_path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;NOPASSWD: ALL&quot;</span> <span class="ow">in</span> <span class="n">run_ssh_command</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="s1">&#39;sudo -l -U ansible_user&#39;</span><span class="p">,</span> <span class="n">control_path</span><span class="p">,</span> <span class="n">use_sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">enable_ansible_user</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">ssh_key</span><span class="p">,</span> <span class="n">control_path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">check_user_exists</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">control_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">check_sudo_permissions</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">control_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User ansible_user already exists with appropriate sudo permissions.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User ansible_user exists but does not have appropriate sudo permissions.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;adduser --disabled-password --gecos &quot;&quot; ansible_user&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;echo &quot;ansible_user ALL=(ALL) NOPASSWD:ALL&quot; | tee /etc/sudoers.d/ansible_user&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mkdir -p /home/ansible_user/.ssh&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;chmod 700 /home/ansible_user/.ssh&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;touch /home/ansible_user/.ssh/authorized_keys&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;chmod 600 /home/ansible_user/.ssh/authorized_keys&#39;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s1">&#39;echo &quot;</span><span class="si">{</span><span class="n">ssh_key</span><span class="si">}</span><span class="s1">&quot; | tee -a /home/ansible_user/.ssh/authorized_keys&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;chown -R ansible_user:ansible_user /home/ansible_user/.ssh&#39;</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+        <span class="n">run_ssh_command</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">control_path</span><span class="p">,</span> <span class="n">use_sudo</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Usage: enable_ansible &lt;hostname&gt;&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">hostname</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">get_ssh_keys</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No SSH public keys found in ~/.ssh&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">selected_key</span> <span class="o">=</span> <span class="n">prompt_for_ssh_key</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">ssh_key_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;~/.ssh/</span><span class="si">{</span><span class="n">selected_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ssh_key_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">key_file</span><span class="p">:</span>
+        <span class="n">ssh_key</span> <span class="o">=</span> <span class="n">key_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">control_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/tmp/ansible-ssh-</span><span class="si">{</span><span class="n">hostname</span><span class="si">}</span><span class="s2">-22-control&quot;</span>
+
+    <span class="c1"># Set up the control master connection</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;ssh&#39;</span><span class="p">,</span> <span class="s1">&#39;-M&#39;</span><span class="p">,</span> <span class="s1">&#39;-S&#39;</span><span class="p">,</span> <span class="n">control_path</span><span class="p">,</span> <span class="s1">&#39;-fNT&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">enable_ansible_user</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">ssh_key</span><span class="p">,</span> <span class="n">control_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ansible user enabled on </span><span class="si">{</span><span class="n">hostname</span><span class="si">}</span><span class="s2"> with SSH key </span><span class="si">{</span><span class="n">selected_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Close the control master connection</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;ssh&#39;</span><span class="p">,</span> <span class="s1">&#39;-S&#39;</span><span class="p">,</span> <span class="n">control_path</span><span class="p">,</span> <span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="s1">&#39;exit&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
     </div>
 </article>
     <div class="giscus"></div>
