@@ -11,7 +11,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://isaac.cc/./2024-09-17-deploying-django-to-digital-ocean">
     <meta property="og:title" content="Deploying Django to Digital Ocean | Programming Reality">
-    <meta property="og:description" content="Although not strictly part of the [[01-personal-infrastructure]] series, this blog post will discuss building and deploying a basic Django application.">
+    <meta property="og:description" content="Although not strictly part of the [[blog/01-personal-infrastructure]] series, this blog post will discuss building and deploying a basic Django application.">
     <meta property="og:image" content="https://isaac.cc//og-image.png">
 
     <!-- Twitter -->
@@ -99,17 +99,21 @@
     </div>
     
     <div class="pt-4">
-    <p>Although not strictly part of the <span class="wikilink unpublished">01-personal-infrastructure</span> series, this blog post will discuss building and deploying a basic Django application.</p>
-<p>Secrets:
-- Postgres
-- Django admin
-- Django token
-- SSH Keys
-- Ansible Vault Password</p>
+    <p>Although not strictly part of the <a class="wikilink internal-link" href="../blog/2024-09-02-personal-microservices-infrastructure-project">Personal Microservices Infrastructure Project</a> series, this blog post will discuss building and deploying a basic Django application.</p>
+<p>Secrets:</p>
+<ul>
+<li>Postgres</li>
+<li>Django admin</li>
+<li>Django token</li>
+<li>SSH Keys</li>
+<li>Ansible Vault Password</li>
+</ul>
 <p>Ansible</p>
-<p>2 Docker Images
-- Nginx
-- Django</p>
+<p>2 Docker Images</p>
+<ul>
+<li>Nginx</li>
+<li>Django</li>
+</ul>
 <p>Questions:</p>
 <p>Should .env file be backed into container? No
  - Can be loaded by  <code>compose.yaml</code>
