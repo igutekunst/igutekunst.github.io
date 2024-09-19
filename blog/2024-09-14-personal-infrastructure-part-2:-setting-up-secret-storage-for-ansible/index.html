@@ -18,8 +18,8 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible">
     <meta property="twitter:title" content="Personal Infrastructure Part 2: Setting up Secret Storage for Ansible | Programming Reality">
-    <meta property="twitter:description" content="Exploring the intersection of programming, philosophy, and spirituality.">
-    <meta property="twitter:image" content="https://isaac.cc//og-image.png">
+    <meta property="twitter:description" content="In this post, I'm going to explain one way to store secrets when using Ansible.">
+    <meta property="twitter:image" content="https://isaac.cc//images/ansible-vault-1.png">
 
     <!-- Existing meta tags and links -->
     <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
@@ -192,6 +192,7 @@ After digging around, and doing this a few times, I've settled on the following 
 <h3 id="create-initial-vault-password">Create initial vault password</h3>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>staging<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
 <span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>development<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
+<span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>production<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
 </code></pre></div>
     </div>
 </article>
