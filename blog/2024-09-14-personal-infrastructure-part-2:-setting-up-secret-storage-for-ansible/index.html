@@ -12,7 +12,7 @@
     <meta property="og:url" content="https://isaac.cc/blog/2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible">
     <meta property="og:title" content="Personal Infrastructure Part 2: Setting up Secret Storage for Ansible | Programming Reality">
     <meta property="og:description" content="In this post, I'm going to explain one way to store secrets when using Ansible.">
-    <meta property="og:image" content="https://isaac.cc//og-image.png">
+    <meta property="og:image" content="https://isaac.cc//images/ansible-vault-1.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -87,7 +87,7 @@
     <h1 class="mt-1 mb-1">Personal Infrastructure Part 2: Setting up Secret Storage for Ansible</h1>
     <p class="text-muted">
         <small>Published on September 14, 2024</small>
-        | <small>Last updated on September 14, 2024</small>
+        | <small>Last updated on September 19, 2024</small>
     </p>
     
     <div class="mb-4">
@@ -103,7 +103,8 @@
     </div>
     
     <div class="pt-4">
-    <p>In this post, I'm going to explain one way to store secrets when using Ansible.</p>
+    <p><img alt="Image of high tech secure vault" src="../../images/ansible-vault-1.webp" /></p>
+<p>In this post, I'm going to explain one way to store secrets when using Ansible.</p>
 <p>Ansible has the ability to encrypt and decrypt data, using what it calls the <a class="external-link" href="https://docs.ansible.com/ansible/latest/vault_guide/index.html">Ansible Vault</a>.</p>
 <h2 id="introduction">Introduction</h2>
 <p>Many services require passwords, keys and other secrets. Some are used to access systems and services outside of the ansible deployment, and many are often randomly generated during the initial setup for use within the deployment.</p>
@@ -117,7 +118,9 @@ After digging around, and doing this a few times, I've settled on the following 
 <h2 id="pieces">Pieces</h2>
 <h3 id="1-store-vault-password">1. Store Vault Password</h3>
 <p>I made a simple python script that for storing a password in the system's protected storage. This should work on Windows, MacOS and Linux (in Desktop mode), though I haven't tested on anything except MacOS:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">keyring</span>
 <span class="kn">import</span> <span class="nn">getpass</span>
@@ -125,8 +128,10 @@ After digging around, and doing this a few times, I've settled on the following 
 <span class="kn">import</span> <span class="nn">secrets</span>
 <span class="kn">import</span> <span class="nn">string</span>
 
+<span class="n">APP_ENV</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;APP_ENV&quot;</span><span class="p">,</span><span class="s2">&quot;development&quot;</span><span class="p">)</span>
+
 <span class="n">SERVICE_NAME</span> <span class="o">=</span> <span class="s2">&quot;AnsibleVault&quot;</span>
-<span class="n">ACCOUNT_NAME</span> <span class="o">=</span> <span class="s2">&quot;ansible_vault_password&quot;</span>
+<span class="n">ACCOUNT_NAME</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ansible_vault_password_rev_</span><span class="si">{</span><span class="n">APP_ENV</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="k">def</span> <span class="nf">get_vault_password</span><span class="p">():</span>
     <span class="n">password</span> <span class="o">=</span> <span class="n">keyring</span><span class="o">.</span><span class="n">get_password</span><span class="p">(</span><span class="n">SERVICE_NAME</span><span class="p">,</span> <span class="n">ACCOUNT_NAME</span><span class="p">)</span>
@@ -183,8 +188,10 @@ After digging around, and doing this a few times, I've settled on the following 
 <span class="nv">interpreter_python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>auto_silent
 </code></pre></div>
 
+<p><strong>Important:</strong>  Be sure to make sure get_vault_pass.py is executable and has an appropriate <code>#!/usr/bin/env python</code> or similar.</p>
 <h3 id="create-initial-vault-password">Create initial vault password</h3>
-<div class="codehilite"><pre><span></span><code><span class="w">    </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>staging<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
+<span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>development<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
 </code></pre></div>
     </div>
 </article>

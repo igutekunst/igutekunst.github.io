@@ -3,13 +3,13 @@
         "title": "nav",
         "url": "/nav",
         "tags": [],
-        "date": "2024-09-18"
+        "date": "2024-09-19"
     },
     {
         "title": "Contact Me",
         "url": "/contact",
         "tags": [],
-        "date": "2024-09-18"
+        "date": "2024-09-19"
     },
     {
         "title": "Deploying Django to Digital Ocean",
@@ -30,7 +30,7 @@
         "title": "About",
         "url": "/about",
         "tags": [],
-        "date": "2024-09-18"
+        "date": "2024-09-19"
     },
     {
         "title": "Welcome to Programming Reality",
@@ -78,7 +78,7 @@
         "title": "index",
         "url": "/blog",
         "tags": [],
-        "date": "2024-09-18"
+        "date": "2024-09-19"
     },
     {
         "title": "Personal Microservices Infrastructure Project",
