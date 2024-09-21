@@ -49,7 +49,8 @@
             "blog",
             "development",
             "infrastructure",
-            "ansible"
+            "ansible",
+            "django"
         ],
         "date": "2024-09-15"
     },
@@ -79,17 +80,6 @@
         "url": "/blog",
         "tags": [],
         "date": "2024-09-20"
-    },
-    {
-        "title": "Deploying A Basic Django Site using Ansible",
-        "url": "/blog/2024-09-16-deploying-a-basic-django-site-using-ansible",
-        "tags": [
-            "blog",
-            "development",
-            "infrastructure",
-            "ansible"
-        ],
-        "date": "2024-09-16"
     },
     {
         "title": "Personal Microservices Infrastructure Project",
