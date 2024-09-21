@@ -188,7 +188,7 @@ After digging around, and doing this a few times, I've settled on the following 
 <span class="nv">interpreter_python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>auto_silent
 </code></pre></div>
 
-<p><strong>Important:</strong>  Be sure to make sure get_vault_pass.py is executable and has an appropriate <code>#!/usr/bin/env python</code> or similar.</p>
+<p><strong>Important:</strong>  Be sure to make sure <code>get_vault_pass.py</code> is executable and has an appropriate <code>#!/usr/bin/env python</code> or similar.</p>
 <h3 id="create-initial-vault-password">Create initial vault password</h3>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>staging<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
 <span class="w">    </span><span class="nv">APP_ENV</span><span class="o">=</span>development<span class="w"> </span>python3<span class="w"> </span>physical-server-ansible-playbook/get_vault_pass.py<span class="w"> </span>generate
