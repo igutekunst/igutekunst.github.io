@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Deploying Services like Plex Behind an Nginx Reverse Proxy | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaac.cc/blog/2024-09-22-deploying-services-like-plex-behind-an-nginx-reverse-proxy">
+    <meta property="og:title" content="Deploying Services like Plex Behind an Nginx Reverse Proxy | Programming Reality">
+    <meta property="og:description" content="In this setup, there is a computer running nginx with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the nginx reverse proxy and create a CNAME record for each service.">
+    <meta property="og:image" content="https://isaac.cc//og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-22-deploying-services-like-plex-behind-an-nginx-reverse-proxy">
+    <meta property="twitter:title" content="Deploying Services like Plex Behind an Nginx Reverse Proxy | Programming Reality">
+    <meta property="twitter:description" content="In this setup, there is a computer running nginx with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the nginx reverse proxy and create a CNAME record for each service.">
+    <meta property="twitter:image" content="https://isaac.cc//og-image.png">
+
+    <!-- Existing meta tags and links -->
+    <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Deploying Services like Plex Behind an Nginx Reverse Proxy",
+        "url": "",
+        "datePublished": "2024-09-22 00:00:00",
+        "keywords": ["blog", "development", "infrastructure", "ansible"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst",
+            "url": "https://isaac.cc/about"
+        }
+    }
+    </script>
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-base-path="../../">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Programming Reality</a>
+            <input type="checkbox" id="navbarToggle" class="d-none">
+            <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="light-dropdown-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                </span>
+            </label>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
+        
+<div class="container">
+<article class="article mx-auto article-wide">
+    <h1 class="mt-1 mb-1">Deploying Services like Plex Behind an Nginx Reverse Proxy</h1>
+    <p class="text-muted">
+        <small>Published on September 22, 2024</small>
+        | <small>Last updated on September 20, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
+        
+        <a href="../../tags/development" class="badge bg-secondary text-decoration-none link-light me-1">#development</a>
+        
+        <a href="../../tags/infrastructure" class="badge bg-secondary text-decoration-none link-light me-1">#infrastructure</a>
+        
+        <a href="../../tags/ansible" class="badge bg-secondary text-decoration-none link-light me-1">#ansible</a>
+        
+    </div>
+    
+    <div class="pt-4">
+    <p>In this post, I describe a method for hosting any straightforward web service behind an <a class="external-link" href="http://nginx.org">nginx</a> reverse proxy with automatically renewing Let's Encrypt SSL Certificates.</p>
+<p>There are numerous web applications that can be self-hosted. I love checking out <a class="external-link" href="https://github.com/awesome-selfhosted/awesome-selfhosted">awesome-selfhosted</a> on GitHub for ideas. These services differ in many ways: they are written in different languages, have different methods for hosting, handling SSL, and more. Hosting them easily with an automatically renewing SSL certificate is quite simple using <code>nginx</code> in a reverse proxy configuration.</p>
+<h2 id="architecture">Architecture</h2>
+<p><img alt="Architecture diagram with internet, proxy and 3 services" src="../../images/drawio/nginx-reverse-proxy.svg" /></p>
+<p>In this setup, there is a computer running <code>nginx</code> with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the <code>nginx</code> reverse proxy and create a <code>CNAME</code> record for each service.</p>
+<p>This minimizes the amount of code and potentially vulnerable software running on a publicly accessible computer. Certbot can run in one place, easily updating all SSL certificates, and <code>nginx</code> can terminate SSL quickly and reliably.</p>
+<p>All the backend services can therefore run unencrypted on port 80, as they are behind a firewall with private IPs in a trusted environment. This simplifies deploying services, as a bespoke SSL configuration is not required.</p>
+<p><strong>Security Improvements</strong>
+Although running on port 80 in the private address space is "fine," it would be more secure to use SSL between <code>nginx</code> and the services. However, doing this manually is quite annoying, and setting up a proper Certificate Authority and secrets management strategy is beyond the scope of this article. In a later article, I'll describe how to further secure this setup once I have <a class="external-link" href="https://www.vaultproject.io">Ansible Vault</a> running in a private "core services" cluster.</p>
+<h2 id="step-by-step">Step By Step</h2>
+<p>If you want to recreate something similar, you may follow these steps:</p>
+<h3 id="1-dns-setup">1. DNS Setup</h3>
+<p>Configure your DNS provider to have a CNAME or A record for each service that you wish to host, pointing to the <code>nginx</code> server. For example, <code>plex.example.com</code> should point to the IP address of "Nginx with Certbot" in the diagram above.</p>
+<p>This is necessary so that A) you can connect to your service, and B) Certbot can issue a certificate.</p>
+<p>For example:</p>
+<div class="codehilite"><pre><span></span><code>    gateway.example.com.     300    IN      A   123.123.123.123
+    plex.example.com.        300    CNAME   gateway.example.com.
+    blog.example.com.        300    CNAME   gateway.example.com.
+    other.example.com.       300    CNAME   gateway.example.com.
+</code></pre></div>
+
+<h2 id="2-nginx-setup">2. nginx setup</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>This section assumes that you have <code>nginx</code> installed on a server. If not, please install it. Digital Ocean has a comprehensive guide that I recommend: <a class="external-link" href="https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04">Installing Nginx on Ubuntu 20.04</a>.</p>
+<p>This guide covers more than is strictly necessary, but it's good information to know.</p>
+<h3 id="configuration">Configuration</h3>
+<p>For each service behind <code>nginx</code>, you will need a <code>server</code> block somewhere in the collection of files that <code>nginx</code> loads for its configuration.</p>
+<p>Typically, there is a core configuration file <code>/etc/nginx/nginx.conf</code>, as well as one or more <strong>available</strong> sites in <code>/etc/nginx/sites-available</code> that are enabled by creating a symlink from <code>/etc/nginx/sites-enabled</code>. When <code>nginx</code> starts up, it looks at <code>nginx.conf</code>, which in turn includes all the files in <code>sites-enabled</code> (<code>include /etc/nginx/modules-enabled/*.conf;</code>). </p>
+<p>For a basic service, you can start with something like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">nginx</span><span class="o">/</span><span class="nx">sites</span><span class="o">-</span><span class="nx">available</span><span class="o">/</span><span class="nx">foo</span>
+<span class="nx">upstream</span><span class="w"> </span><span class="nx">foo_server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">server</span><span class="w"> </span><span class="m m-Double">10.0.0.20</span><span class="p">:</span><span class="mi">80</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">server_name</span><span class="w"> </span><span class="nx">foo</span><span class="p">.</span><span class="nx">example</span><span class="p">.</span><span class="nx">com</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">location</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">proxy_pass</span><span class="w"> </span><span class="nx">http</span><span class="p">:</span><span class="c1">//foo_server;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Host</span><span class="w"> </span><span class="err">$</span><span class="nx">host</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Real</span><span class="o">-</span><span class="nx">IP</span><span class="w"> </span><span class="err">$</span><span class="nx">remote_addr</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Forwarded</span><span class="o">-</span><span class="nx">For</span><span class="w"> </span><span class="err">$</span><span class="nx">proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Forwarded</span><span class="o">-</span><span class="nx">Proto</span><span class="w"> </span><span class="err">$</span><span class="nx">scheme</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="notes">Notes</h3>
+<p>There are a few things to keep in mind:</p>
+<ol>
+<li>The upstream <code>foo_server</code> must be unique. Multiple upstream directives with the same name is an error</li>
+<li>If you are hosting multiple services on one machine, you'll need to make them listen on different ports, rather than port 80.</li>
+<li>When you run <code>certbot --nginx</code> later, it will edit this file</li>
+<li>Some services require some additional configuration options</li>
+</ol>
+<h3 id="testing-and-enabling">Testing and Enabling</h3>
+<p>Once you are happy with your base nginx configuration file, create a symlink from <code>sites-enabled</code>:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>/etc/nginx/sites-available/foo<span class="w"> </span>/etc/nginx/sites-enabled
+</code></pre></div>
+
+<p>Test your configuration by running:</p>
+<div class="codehilite"><pre><span></span><code>$<span class="w"> </span>nginx<span class="w"> </span>-t
+nginx:<span class="w"> </span>the<span class="w"> </span>configuration<span class="w"> </span>file<span class="w"> </span>/etc/nginx/nginx.conf<span class="w"> </span>syntax<span class="w"> </span>is<span class="w"> </span>ok
+nginx:<span class="w"> </span>configuration<span class="w"> </span>file<span class="w"> </span>/etc/nginx/nginx.conf<span class="w"> </span><span class="nb">test</span><span class="w"> </span>is<span class="w"> </span>successful
+</code></pre></div>
+
+<p>If it does not show an output like this, edit the file and keep checking until it passes.</p>
+<p>Then reload nginx with</p>
+<div class="codehilite"><pre><span></span><code>nginx<span class="w"> </span>-s<span class="w"> </span>reload
+<span class="m">2024</span>/09/22<span class="w"> </span><span class="m">21</span>:31:16<span class="w"> </span><span class="o">[</span>notice<span class="o">]</span><span class="w"> </span><span class="m">1183285</span><span class="c1">#1183285: signal process started</span>
+</code></pre></div>
+
+<p>If all is good, you should be able to access your server at <code>foo.example.com</code>.</p>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<ol>
+<li>
+<p>Verify that you can access the "backend" via it's internal private IP. </p>
+</li>
+<li>
+<p>check the <code>nginx</code> logs</p>
+</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>tail<span class="w"> </span>-f<span class="w"> </span>/var/log/nginx/error.log
+</code></pre></div>
+
+<ol>
+<li>Verify you can ping the backend from the reverse proxy host</li>
+<li>Check the logs from the backend</li>
+</ol>
+<h2 id="3-get-an-ssl-certificate-that-automatically-renews">3. Get an SSL Certificate that automatically renews</h2>
+<p><a class="external-link" href="https://certbot.eff.org">Certbot</a> in combination with <a class="external-link" href="https://letsencrypt.org">Let's Encrypt</a> makes it very easy to get a free SSL certificate. Digital Ocean has another great article on this. Check out <a class="external-link" href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04">How To Secure Nginx with Let's Encrypt on Ubuntu 20.04</a></p>
+<p>If you just want to jump into it, it's as simple as :</p>
+<h3 id="install-certbot">Install Certbot</h3>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>certbot<span class="w"> </span>python3-certbot-nginx
+</code></pre></div>
+
+<h3 id="run-certbot">Run Certbot</h3>
+<div class="codehilite"><pre><span></span><code>certbot<span class="w"> </span>--nginx
+</code></pre></div>
+
+<p>Follow the prompts, and you are off to the races.</p>
+<h2 id="4-review-updated-nginx-configuration">4. Review Updated nginx configuration</h2>
+<p>Open up the <code>/etc/nginx/sites-available/foo</code> in your favorite text editor.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">upstream</span><span class="w"> </span><span class="n">foo_server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">server</span><span class="w"> </span><span class="mf">10.0</span><span class="o">.</span><span class="mf">0.20</span><span class="p">:</span><span class="mi">11280</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">server_name</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">location</span><span class="w"> </span><span class="o">/.</span><span class="n">well</span><span class="o">-</span><span class="n">known</span><span class="o">/</span><span class="n">acme</span><span class="o">-</span><span class="n">challenge</span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">root</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">certbot</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">location</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">proxy_pass</span><span class="w"> </span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">foo_server</span><span class="p">;</span>
+<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">Host</span><span class="w"> </span><span class="o">$</span><span class="n">host</span><span class="p">;</span>
+<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Real</span><span class="o">-</span><span class="n">IP</span><span class="w"> </span><span class="o">$</span><span class="n">remote_addr</span><span class="p">;</span>
+<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">For</span><span class="w"> </span><span class="o">$</span><span class="n">proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">Proto</span><span class="w"> </span><span class="o">$</span><span class="n">scheme</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+
+<span class="w">    </span><span class="n">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="n">ssl</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="n">ssl_certificate</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">live</span><span class="o">/</span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fullchain</span><span class="o">.</span><span class="n">pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="n">ssl_certificate_key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">live</span><span class="o">/</span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">privkey</span><span class="o">.</span><span class="n">pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">options</span><span class="o">-</span><span class="n">ssl</span><span class="o">-</span><span class="n">nginx</span><span class="o">.</span><span class="n">conf</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="n">ssl_dhparam</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">ssl</span><span class="o">-</span><span class="n">dhparams</span><span class="o">.</span><span class="n">pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+
+<span class="p">}</span>
+
+
+<span class="n">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">$</span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">301</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//$</span><span class="n">host</span><span class="o">$</span><span class="n">request_uri</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+
+
+<span class="w">    </span><span class="n">server_name</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">;</span>
+<span class="w">    </span><span class="n">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">404</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+
+
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Notice that it made a few changes:</p>
+<ol>
+<li>Added a new <code>server</code> block that only listens on port 80 and redirects to <code>https</code> on port 443.</li>
+<li>Changed the first <code>server</code> block to listen on port 443 with SSL enabled.</li>
+<li>Added a key, certificate, and two other configuration files.</li>
+</ol>
+<h3 id="notes-for-running-plex-server">Notes for Running Plex Server</h3>
+<p>To run Plex efficiently behind an <code>nginx</code> reverse proxy, you can make some additional edits to the configuration file.</p>
+<p>Check out <a class="external-link" href="https://github.com/toomuchio/plex-nginx-reverseproxy/blob/master/nginx.conf">plex nginx.conf</a> on GitHub for an extensively tweaked file.</p>
+<p>I've settled on a subset of the tweaks, notably:</p>
+<ul>
+<li>HTTP/2</li>
+<li>Plex headers</li>
+<li>WebSocket support</li>
+</ul>
+<p>I did not add gzip compression or OCSP stapling, but these seem like good ideas.</p>
+<div class="codehilite"><pre><span></span><code><span class="nx">upstream</span><span class="w"> </span><span class="nx">plex</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">server</span><span class="w"> </span><span class="m m-Double">10.0.0.22</span><span class="p">:</span><span class="mi">32400</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">server_name</span><span class="w"> </span><span class="nx">plex</span><span class="p">.</span><span class="nx">example</span><span class="p">.</span><span class="nx">com</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="nx">ssl</span><span class="w"> </span><span class="nx">http2</span><span class="p">;</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="nx">Added</span><span class="w"> </span><span class="nx">http2</span>
+
+<span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nx">Plex</span><span class="o">-</span><span class="nx">specific</span><span class="w"> </span><span class="nx">configuration</span>
+<span class="w">    </span><span class="nx">client_max_body_size</span><span class="w"> </span><span class="mi">100</span><span class="nx">M</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">proxy_buffering</span><span class="w"> </span><span class="nx">off</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nx">location</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">proxy_pass</span><span class="w"> </span><span class="nx">https</span><span class="p">:</span><span class="c1">//plex;</span>
+<span class="w">        </span><span class="nx">proxy_ssl_verify</span><span class="w"> </span><span class="nx">off</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Host</span><span class="w"> </span><span class="err">$</span><span class="nx">host</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Real</span><span class="o">-</span><span class="nx">IP</span><span class="w"> </span><span class="err">$</span><span class="nx">remote_addr</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Forwarded</span><span class="o">-</span><span class="nx">For</span><span class="w"> </span><span class="err">$</span><span class="nx">proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Forwarded</span><span class="o">-</span><span class="nx">Proto</span><span class="w"> </span><span class="err">$</span><span class="nx">scheme</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Sec</span><span class="o">-</span><span class="nx">WebSocket</span><span class="o">-</span><span class="nx">Extensions</span><span class="w"> </span><span class="err">$</span><span class="nx">http_sec_websocket_extensions</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Sec</span><span class="o">-</span><span class="nx">WebSocket</span><span class="o">-</span><span class="nx">Key</span><span class="w"> </span><span class="err">$</span><span class="nx">http_sec_websocket_key</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Sec</span><span class="o">-</span><span class="nx">WebSocket</span><span class="o">-</span><span class="nx">Version</span><span class="w"> </span><span class="err">$</span><span class="nx">http_sec_websocket_version</span><span class="p">;</span>
+
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">Plex</span><span class="o">-</span><span class="nx">specific</span><span class="w"> </span><span class="nx">headers</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Client</span><span class="o">-</span><span class="nx">Identifier</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_client_identifier</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Device</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_device</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Device</span><span class="o">-</span><span class="nx">Name</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_device_name</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Platform</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_platform</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Platform</span><span class="o">-</span><span class="nx">Version</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_platform_version</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Product</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_product</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Plex</span><span class="o">-</span><span class="nx">Version</span><span class="w"> </span><span class="err">$</span><span class="nx">http_x_plex_version</span><span class="p">;</span>
+
+<span class="w">        </span><span class="err">#</span><span class="w"> </span><span class="nx">WebSocket</span><span class="w"> </span><span class="nx">support</span>
+<span class="w">        </span><span class="nx">proxy_http_version</span><span class="w"> </span><span class="m m-Double">1.1</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Upgrade</span><span class="w"> </span><span class="err">$</span><span class="nx">http_upgrade</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Connection</span><span class="w"> </span><span class="s">&quot;upgrade&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="notes-for-ansible-or-other-configuration-management-setup">Notes for Ansible or other Configuration Management Setup</h3>
+<p>There is nothing you need to do here unless you plan on automatically updating the configuration file using a tool like Ansible. If so, you will need to add some logic to your Ansible role to check for the presence of valid SSL certificates. If valid certificates are found, render the full "post certbot" file. If not, render the basic one, run certbot, and then render the "post certbot" file.</p>
+    </div>
+</article>
+    <div class="giscus"></div>
+</div>
+
+    </main>
+
+    <footer class="mt-auto px-4 bg-theme pt-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="https://x.com/dancing_void" class="btn btn-outline-secondary btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="https://github.com/igutekunst" class="btn btn-outline-secondary btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class=" btn btn-outline-secondary btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+    
+
+    <script src="https://giscus.app/client.js"
+        data-repo="igutekunst/igutekunst.github.io"
+        data-repo-id="R_kgDOMqSlJQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOMqSlJc4CiInM"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+</body>
+</html>
