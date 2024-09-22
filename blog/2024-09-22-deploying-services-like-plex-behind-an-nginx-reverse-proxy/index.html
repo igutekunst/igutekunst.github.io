@@ -133,22 +133,21 @@
 <p>For each service behind <code>nginx</code>, you will need a <code>server</code> block somewhere in the collection of files that <code>nginx</code> loads for its configuration.</p>
 <p>Typically, there is a core configuration file <code>/etc/nginx/nginx.conf</code>, as well as one or more <strong>available</strong> sites in <code>/etc/nginx/sites-available</code> that are enabled by creating a symlink from <code>/etc/nginx/sites-enabled</code>. When <code>nginx</code> starts up, it looks at <code>nginx.conf</code>, which in turn includes all the files in <code>sites-enabled</code> (<code>include /etc/nginx/modules-enabled/*.conf;</code>). </p>
 <p>For a basic service, you can start with something like this:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">nginx</span><span class="o">/</span><span class="nx">sites</span><span class="o">-</span><span class="nx">available</span><span class="o">/</span><span class="nx">foo</span>
-<span class="nx">upstream</span><span class="w"> </span><span class="nx">foo_server</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">server</span><span class="w"> </span><span class="m m-Double">10.0.0.20</span><span class="p">:</span><span class="mi">80</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><code><span class="k">upstream</span><span class="w"> </span><span class="s">foo_server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">server</span><span class="w"> </span><span class="n">10.0.0.20</span><span class="p">:</span><span class="mi">80</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nx">server</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">server_name</span><span class="w"> </span><span class="nx">foo</span><span class="p">.</span><span class="nx">example</span><span class="p">.</span><span class="nx">com</span><span class="p">;</span>
+<span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">foo.example.com</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nx">location</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">proxy_pass</span><span class="w"> </span><span class="nx">http</span><span class="p">:</span><span class="c1">//foo_server;</span>
-<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">Host</span><span class="w"> </span><span class="err">$</span><span class="nx">host</span><span class="p">;</span>
-<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Real</span><span class="o">-</span><span class="nx">IP</span><span class="w"> </span><span class="err">$</span><span class="nx">remote_addr</span><span class="p">;</span>
-<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Forwarded</span><span class="o">-</span><span class="nx">For</span><span class="w"> </span><span class="err">$</span><span class="nx">proxy_add_x_forwarded_for</span><span class="p">;</span>
-<span class="w">        </span><span class="nx">proxy_set_header</span><span class="w"> </span><span class="nx">X</span><span class="o">-</span><span class="nx">Forwarded</span><span class="o">-</span><span class="nx">Proto</span><span class="w"> </span><span class="err">$</span><span class="nx">scheme</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://foo_server</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Host</span><span class="w"> </span><span class="nv">$host</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Real-IP</span><span class="w"> </span><span class="nv">$remote_addr</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-For</span><span class="w"> </span><span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-Proto</span><span class="w"> </span><span class="nv">$scheme</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
 
 <span class="p">}</span>
 </code></pre></div>
@@ -209,44 +208,44 @@ nginx:<span class="w"> </span>configuration<span class="w"> </span>file<span cla
 <p>Follow the prompts, and you are off to the races.</p>
 <h2 id="4-review-updated-nginx-configuration">4. Review Updated nginx configuration</h2>
 <p>Open up the <code>/etc/nginx/sites-available/foo</code> in your favorite text editor.</p>
-<div class="codehilite"><pre><span></span><code><span class="n">upstream</span><span class="w"> </span><span class="n">foo_server</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">server</span><span class="w"> </span><span class="mf">10.0</span><span class="o">.</span><span class="mf">0.20</span><span class="p">:</span><span class="mi">11280</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><code><span class="k">upstream</span><span class="w"> </span><span class="s">foo_server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">server</span><span class="w"> </span><span class="n">10.0.0.20</span><span class="p">:</span><span class="mi">11280</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="n">server</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">server_name</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">;</span>
+<span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">foo.example.com</span><span class="p">;</span>
 
-<span class="w">    </span><span class="n">location</span><span class="w"> </span><span class="o">/.</span><span class="n">well</span><span class="o">-</span><span class="n">known</span><span class="o">/</span><span class="n">acme</span><span class="o">-</span><span class="n">challenge</span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">root</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">certbot</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/.well-known/acme-challenge/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">root</span><span class="w"> </span><span class="s">/var/www/certbot</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">location</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">proxy_pass</span><span class="w"> </span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">foo_server</span><span class="p">;</span>
-<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">Host</span><span class="w"> </span><span class="o">$</span><span class="n">host</span><span class="p">;</span>
-<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Real</span><span class="o">-</span><span class="n">IP</span><span class="w"> </span><span class="o">$</span><span class="n">remote_addr</span><span class="p">;</span>
-<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">For</span><span class="w"> </span><span class="o">$</span><span class="n">proxy_add_x_forwarded_for</span><span class="p">;</span>
-<span class="w">        </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">Proto</span><span class="w"> </span><span class="o">$</span><span class="n">scheme</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://foo_server</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Host</span><span class="w"> </span><span class="nv">$host</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Real-IP</span><span class="w"> </span><span class="nv">$remote_addr</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-For</span><span class="w"> </span><span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-Proto</span><span class="w"> </span><span class="nv">$scheme</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 
-<span class="w">    </span><span class="n">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="n">ssl</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
-<span class="w">    </span><span class="n">ssl_certificate</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">live</span><span class="o">/</span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">fullchain</span><span class="o">.</span><span class="n">pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
-<span class="w">    </span><span class="n">ssl_certificate_key</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">live</span><span class="o">/</span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">privkey</span><span class="o">.</span><span class="n">pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
-<span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">options</span><span class="o">-</span><span class="n">ssl</span><span class="o">-</span><span class="n">nginx</span><span class="o">.</span><span class="n">conf</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
-<span class="w">    </span><span class="n">ssl_dhparam</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">ssl</span><span class="o">-</span><span class="n">dhparams</span><span class="o">.</span><span class="n">pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="kn">ssl_certificate</span><span class="w"> </span><span class="s">/etc/letsencrypt/live/foo.example.com/fullchain.pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/etc/letsencrypt/live/foo.example.com/privkey.pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="kn">include</span><span class="w"> </span><span class="s">/etc/letsencrypt/options-ssl-nginx.conf</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="kn">ssl_dhparam</span><span class="w"> </span><span class="s">/etc/letsencrypt/ssl-dhparams.pem</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
 
 <span class="p">}</span>
 
 
-<span class="n">server</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">$</span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">301</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="o">//$</span><span class="n">host</span><span class="o">$</span><span class="n">request_uri</span><span class="p">;</span>
+<span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">if</span><span class="w"> </span><span class="s">(</span><span class="nv">$host</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">foo.example.com)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">return</span><span class="w"> </span><span class="mi">301</span><span class="w"> </span><span class="s">https://</span><span class="nv">$host$request_uri</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
 
 
-<span class="w">    </span><span class="n">server_name</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">;</span>
-<span class="w">    </span><span class="n">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">404</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">foo.example.com</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">return</span><span class="w"> </span><span class="mi">404</span><span class="p">;</span><span class="w"> </span><span class="c1"># managed by Certbot</span>
 
 
 <span class="p">}</span>
