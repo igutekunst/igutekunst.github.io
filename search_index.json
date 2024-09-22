@@ -3,13 +3,13 @@
         "title": "nav",
         "url": "/nav",
         "tags": [],
-        "date": "2024-09-21"
+        "date": "2024-09-22"
     },
     {
         "title": "Contact Me",
         "url": "/contact",
         "tags": [],
-        "date": "2024-09-21"
+        "date": "2024-09-22"
     },
     {
         "title": "Deploying Django to Digital Ocean",
@@ -30,7 +30,7 @@
         "title": "About",
         "url": "/about",
         "tags": [],
-        "date": "2024-09-21"
+        "date": "2024-09-22"
     },
     {
         "title": "Welcome to Programming Reality",
@@ -41,6 +41,17 @@
             "devops"
         ],
         "date": "2024-08-27"
+    },
+    {
+        "title": "Deploying Services like Plex Behind an Nginx Reverse Proxy",
+        "url": "/blog/2024-09-22-deploying-services-like-plex-behind-an-nginx-reverse-proxy",
+        "tags": [
+            "blog",
+            "development",
+            "infrastructure",
+            "ansible"
+        ],
+        "date": "2024-09-22"
     },
     {
         "title": "Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation",
@@ -79,18 +90,7 @@
         "title": "index",
         "url": "/blog",
         "tags": [],
-        "date": "2024-09-21"
-    },
-    {
-        "title": "Core Supporting Services",
-        "url": "/blog/2024-09-16-core-supporting-services",
-        "tags": [
-            "blog",
-            "development",
-            "infrastructure",
-            "ansible"
-        ],
-        "date": "2024-09-16"
+        "date": "2024-09-22"
     },
     {
         "title": "Personal Infrastructure Part 4: Creating and Storing Initial Secrets",
