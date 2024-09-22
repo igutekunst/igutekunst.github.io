@@ -12,14 +12,14 @@
     <meta property="og:url" content="https://isaac.cc/blog/2024-09-22-deploying-services-like-plex-behind-an-nginx-reverse-proxy">
     <meta property="og:title" content="Deploying Services like Plex Behind an Nginx Reverse Proxy | Programming Reality">
     <meta property="og:description" content="In this setup, there is a computer running nginx with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the nginx reverse proxy and create a CNAME record for each service.">
-    <meta property="og:image" content="https://isaac.cc//og-image.png">
+    <meta property="og:image" content="https://isaac.cc//images/nginx-reverse-proxy.webp">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-22-deploying-services-like-plex-behind-an-nginx-reverse-proxy">
     <meta property="twitter:title" content="Deploying Services like Plex Behind an Nginx Reverse Proxy | Programming Reality">
     <meta property="twitter:description" content="In this setup, there is a computer running nginx with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the nginx reverse proxy and create a CNAME record for each service.">
-    <meta property="twitter:image" content="https://isaac.cc//og-image.png">
+    <meta property="twitter:image" content="https://isaac.cc//images/nginx-reverse-proxy.webp">
 
     <!-- Existing meta tags and links -->
     <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
@@ -103,15 +103,16 @@
     </div>
     
     <div class="pt-4">
-    <p>In this post, I describe a method for hosting any straightforward web service behind an <a class="external-link" href="http://nginx.org">nginx</a> reverse proxy with automatically renewing Let's Encrypt SSL Certificates.</p>
+    <p><img alt="Sci-Fi server rooms showing nginx reverse proxy symbolically" src="../../images/nginx-reverse-proxy.webp" />
+In this post, I describe a method for hosting any straightforward web service behind an <a class="external-link" href="http://nginx.org">nginx</a> reverse proxy with automatically renewing Let's Encrypt SSL Certificates.</p>
 <p>There are numerous web applications that can be self-hosted. I love checking out <a class="external-link" href="https://github.com/awesome-selfhosted/awesome-selfhosted">awesome-selfhosted</a> on GitHub for ideas. These services differ in many ways: they are written in different languages, have different methods for hosting, handling SSL, and more. Hosting them easily with an automatically renewing SSL certificate is quite simple using <code>nginx</code> in a reverse proxy configuration.</p>
 <h2 id="architecture">Architecture</h2>
 <p><img alt="Architecture diagram with internet, proxy and 3 services" src="../../images/drawio/nginx-reverse-proxy.svg" /></p>
 <p>In this setup, there is a computer running <code>nginx</code> with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the <code>nginx</code> reverse proxy and create a <code>CNAME</code> record for each service.</p>
 <p>This minimizes the amount of code and potentially vulnerable software running on a publicly accessible computer. Certbot can run in one place, easily updating all SSL certificates, and <code>nginx</code> can terminate SSL quickly and reliably.</p>
 <p>All the backend services can therefore run unencrypted on port 80, as they are behind a firewall with private IPs in a trusted environment. This simplifies deploying services, as a bespoke SSL configuration is not required.</p>
-<p><strong>Security Improvements</strong>
-Although running on port 80 in the private address space is "fine," it would be more secure to use SSL between <code>nginx</code> and the services. However, doing this manually is quite annoying, and setting up a proper Certificate Authority and secrets management strategy is beyond the scope of this article. In a later article, I'll describe how to further secure this setup once I have <a class="external-link" href="https://www.vaultproject.io">Ansible Vault</a> running in a private "core services" cluster.</p>
+<h4 id="security-improvements">Security Improvements</h4>
+<p>Although running on port 80 in the private address space is "fine," it would be more secure to use SSL between <code>nginx</code> and the services. However, doing this manually is quite annoying, and setting up a proper Certificate Authority and secrets management strategy is beyond the scope of this article. In a later article, I'll describe how to further secure this setup once I have <a class="external-link" href="https://www.vaultproject.io">Ansible Vault</a> running in a private "core services" cluster.</p>
 <h2 id="step-by-step">Step By Step</h2>
 <p>If you want to recreate something similar, you may follow these steps:</p>
 <h3 id="1-dns-setup">1. DNS Setup</h3>
