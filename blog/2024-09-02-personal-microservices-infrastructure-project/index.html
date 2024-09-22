@@ -87,7 +87,7 @@
     <h1 class="mt-1 mb-1">Personal Microservices Infrastructure Project</h1>
     <p class="text-muted">
         <small>Published on September 02, 2024</small>
-        | <small>Last updated on September 17, 2024</small>
+        | <small>Last updated on September 21, 2024</small>
     </p>
     
     <div class="mb-4">
@@ -131,14 +131,16 @@
 <li>Automatically run Ansible on infrastructure code changes.</li>
 </ul>
 <h4 id="3-core-services">3. Core Services</h4>
-<p>In this phase, I will deploy a small cluster of virtual machines that will host “core services” that will make deploying production services easier and more repeatable.
-   - Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images
-   - Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning
-   - Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking
-   - Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration
-   - Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management
-   - Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)
-   - Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</p>
+<p>In this phase, I will deploy a small cluster of virtual machines that will host “core services” that will make deploying production services easier and more repeatable.</p>
+<ul>
+<li>Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images</li>
+<li>Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning</li>
+<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking</li>
+<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration</li>
+<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management</li>
+<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)</li>
+<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</li>
+</ul>
 <h4 id="4-advanced-orchestration">4. Advanced Orchestration:</h4>
 <ul>
 <li>Create a separate Nomad cluster for application workloads</li>
