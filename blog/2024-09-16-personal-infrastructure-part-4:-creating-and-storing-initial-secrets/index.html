@@ -11,14 +11,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://isaac.cc/blog/2024-09-16-personal-infrastructure-part-4:-creating-and-storing-initial-secrets">
     <meta property="og:title" content="Personal Infrastructure Part 4: Creating and Storing Initial Secrets | Programming Reality">
-    <meta property="og:description" content="In this post, I describe my technique for automating the creation of initial secrets for usage in Ansible playbooks.">
+    <meta property="og:description" content="In this post, I describe my technique for automating the creation of initial secrets for use in Ansible playbooks.">
     <meta property="og:image" content="https://isaac.cc//images/ansible-vault-secrets-1.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-16-personal-infrastructure-part-4:-creating-and-storing-initial-secrets">
     <meta property="twitter:title" content="Personal Infrastructure Part 4: Creating and Storing Initial Secrets | Programming Reality">
-    <meta property="twitter:description" content="In this post, I describe my technique for automating the creation of initial secrets for usage in Ansible playbooks.">
+    <meta property="twitter:description" content="In this post, I describe my technique for automating the creation of initial secrets for use in Ansible playbooks.">
     <meta property="twitter:image" content="https://isaac.cc//images/ansible-vault-secrets-1.png">
 
     <!-- Existing meta tags and links -->
@@ -104,14 +104,14 @@
     
     <div class="pt-4">
     <p><img alt="Image of secrets being created in space" src="../../images/ansible-vault-secrets-1.webp" /></p>
-<p>In this post, I describe my technique for automating the creation of initial secrets for usage in Ansible playbooks.</p>
-<p>Most applications need some secret state for operation. This include passwords for database connections, random numbers used for security purposes, API keys, SSH keys and more.</p>
-<p>Some of these secrets are user-defined, and some come from third party or external services. User-defined secrets need to generated at least once when deploying the application, and possibly more if a secret rotation strategy is used. For this post, I will describe a simple way to generate secrets that integrates nicely with Ansible.</p>
-<p>Some people prefer to use features built into Ansible, such as <a class="external-link" href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/password_lookup.html"><code>ansible.builtin.password</code></a>, but I'd rather use my method as it integrates nicely into my vault setup and gracefully handles adding new initial secrets throughout the development process. </p>
+<p>In this post, I describe my technique for automating the creation of initial secrets for use in Ansible playbooks.</p>
+<p>Most applications need some secret state for operation. This includes passwords for database connections, random numbers used for security purposes, API keys, SSH keys, and more.</p>
+<p>Some of these secrets are user-defined, and some come from third-party or external services. User-defined secrets need to be generated at least once when deploying the application, and possibly more if a secret rotation strategy is used. For this post, I will describe a simple way to generate secrets that integrates nicely with Ansible.</p>
+<p>Some people prefer to use features built into Ansible, such as <a class="external-link" href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/password_lookup.html"><code>ansible.builtin.password</code></a>, but I prefer my method as it integrates nicely into my vault setup and gracefully handles adding new initial secrets throughout the development process.</p>
 <h2 id="technique">Technique</h2>
-<p>I use a small python program to manage creation of secrets. I use this in combination with the Ansible Vault and a an ansible <code>role</code> to create secrets on first run and if new secrets are created and store them in a vault, and then inject them as <code>facts</code> into the subsequent roles</p>
+<p>I use a small Python program to manage the creation of secrets. I use this in combination with the Ansible Vault and an Ansible <code>role</code> to create secrets on the first run and if new secrets are created, store them in a vault, and then inject them as <code>facts</code> into the subsequent roles.</p>
 <p><strong>Python Program</strong>
-The python program takes in a list of secrets from stdin, the name of a YAML file, and outputs a YAML file that has a secret for each one specified via command line. The program will also preserve any secrets that are not specified, allowing manually added secrets to be stored in the same vault. </p>
+The Python program takes in a list of secrets from stdin, the name of a YAML file, and outputs a YAML file that has a secret for each one specified via the command line. The program will also preserve any secrets that are not specified, allowing manually added secrets to be stored in the same vault. </p>
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">string</span>
