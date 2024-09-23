@@ -93,6 +93,17 @@
         "date": "2024-09-23"
     },
     {
+        "title": "Setting up Continuous Integration using Drone CI",
+        "url": "/blog/2024-09-23-setting-up-continuous-integration-using-drone-ci",
+        "tags": [
+            "blog",
+            "development",
+            "infrastructure",
+            "ansible"
+        ],
+        "date": "2024-09-23"
+    },
+    {
         "title": "Personal Infrastructure Part 4: Creating and Storing Initial Secrets",
         "url": "/blog/2024-09-16-personal-infrastructure-part-4:-creating-and-storing-initial-secrets",
         "tags": [
