@@ -126,25 +126,25 @@
 </ul>
 <h4 id="2-ci-runner-setup">2. CI Runner Setup:</h4>
 <ul>
-<li>Install and configure a CI tool (likely <a class="external-link" href="https://www.drone.io/">Drone CI</a>)</li>
+<li>Install and configure a CI tool (likely <a class="external-link" href="https://www.drone.io/">Drone CI<img src="../../images/external-link.svg" /></a>)</li>
 <li>Migrate legacy services to Ansible, deployed by CI</li>
 <li>Automatically run Ansible on infrastructure code changes.</li>
 </ul>
 <h4 id="3-core-services">3. Core Services</h4>
 <p>In this phase, I will deploy a small cluster of virtual machines that will host “core services” that will make deploying production services easier and more repeatable.</p>
 <ul>
-<li>Use <a class="external-link" href="https://www.packer.io/">Packer</a> for creating standardized VM images</li>
-<li>Implement <a class="external-link" href="https://www.terraform.io/">Terraform</a> for infrastructure provisioning</li>
-<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale</a> for secure networking</li>
-<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad</a> for initial workload orchestration</li>
-<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault</a> for secrets management</li>
-<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus</a>, <a class="external-link" href="https://grafana.com/">Grafana</a>)</li>
-<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack</a>)</li>
+<li>Use <a class="external-link" href="https://www.packer.io/">Packer<img src="../../images/external-link.svg" /></a> for creating standardized VM images</li>
+<li>Implement <a class="external-link" href="https://www.terraform.io/">Terraform<img src="../../images/external-link.svg" /></a> for infrastructure provisioning</li>
+<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale<img src="../../images/external-link.svg" /></a> for secure networking</li>
+<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad<img src="../../images/external-link.svg" /></a> for initial workload orchestration</li>
+<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault<img src="../../images/external-link.svg" /></a> for secrets management</li>
+<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus<img src="../../images/external-link.svg" /></a>, <a class="external-link" href="https://grafana.com/">Grafana<img src="../../images/external-link.svg" /></a>)</li>
+<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack<img src="../../images/external-link.svg" /></a>)</li>
 </ul>
 <h4 id="4-advanced-orchestration">4. Advanced Orchestration:</h4>
 <ul>
 <li>Create a separate Nomad cluster for application workloads</li>
-<li>Potentially set up <a class="external-link" href="https://k3s.io/">K3s</a> (lightweight Kubernetes) within Nomad</li>
+<li>Potentially set up <a class="external-link" href="https://k3s.io/">K3s<img src="../../images/external-link.svg" /></a> (lightweight Kubernetes) within Nomad</li>
 </ul>
 <h4 id="5-network-and-security">5. Network and Security:</h4>
 <ul>

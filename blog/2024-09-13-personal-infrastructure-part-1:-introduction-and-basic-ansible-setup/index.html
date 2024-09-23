@@ -108,7 +108,7 @@
 <h2 id="my-existing-setup">My Existing Setup</h2>
 <h3 id="hardware">Hardware</h3>
 <ul>
-<li><a class="external-link" href="https://protectli.com/vault-6-port/">Protectli Vault</a>, configured with 64GB RAM, and a Samsung 4TB SSD.</li>
+<li><a class="external-link" href="https://protectli.com/vault-6-port/">Protectli Vault<img src="../../images/external-link.svg" /></a>, configured with 64GB RAM, and a Samsung 4TB SSD.</li>
 <li>AMD Threadripper desktop with 128GB RAM, and 8TB of SSD storage.</li>
 <li>Old MSI laptop with 16GB or RAM and 1 TB of SSD Storage</li>
 <li>Digital Ocean Intel SSD VM with 4GB of RAM and 100 GB or storage.</li>
@@ -117,30 +117,30 @@
 <h3 id="existing-use-cases">Existing Use Cases</h3>
 <p>Right now I host a few personal web services:</p>
 <ul>
-<li><a class="external-link" href="plex.tv">Plex</a></li>
-<li>My "spiritual" website: <a class="external-link" href="https://iamthatiam.org">i am that i am</a>, an "almost" static site that uses a bit of Django.</li>
-<li>A personal <a class="external-link" href="sentry.io">Sentry</a> instance.</li>
-<li>A personal <a class="external-link" href="jenkins.io">Jenkins</a> instance</li>
-<li>A <a class="external-link" href="https://plausible.io">Plausible Analytics</a> instance</li>
+<li><a class="external-link" href="plex.tv">Plex<img src="../../images/external-link.svg" /></a></li>
+<li>My "spiritual" website: <a class="external-link" href="https://iamthatiam.org">i am that i am<img src="../../images/external-link.svg" /></a>, an "almost" static site that uses a bit of Django.</li>
+<li>A personal <a class="external-link" href="sentry.io">Sentry<img src="../../images/external-link.svg" /></a> instance.</li>
+<li>A personal <a class="external-link" href="jenkins.io">Jenkins<img src="../../images/external-link.svg" /></a> instance</li>
+<li>A <a class="external-link" href="https://plausible.io">Plausible Analytics<img src="../../images/external-link.svg" /></a> instance</li>
 <li>A few more</li>
 </ul>
 <h3 id="network-topology">Network Topology</h3>
-<p>All the physical hardware is connected via a gigabit switch behind pfSense router. The pfSense router is running a <a class="external-link" href="https://www.wireguard.com">Wireguard</a> server that I connect to with my roaming Mac laptop, and iPhone. All these servers are on the <code>10.0.0.0/24</code> subnet. All Wireguard clients are on the <code>10.2.0.0/24</code> subnet, with a specific tunnel for each one.</p>
+<p>All the physical hardware is connected via a gigabit switch behind pfSense router. The pfSense router is running a <a class="external-link" href="https://www.wireguard.com">Wireguard<img src="../../images/external-link.svg" /></a> server that I connect to with my roaming Mac laptop, and iPhone. All these servers are on the <code>10.0.0.0/24</code> subnet. All Wireguard clients are on the <code>10.2.0.0/24</code> subnet, with a specific tunnel for each one.</p>
 <p>My VM provided by Digital Ocean is running Debian 12. It has a permanent Wireguard tunnel back to the pfSense box. For this website, I will call this box <code>gateway</code>.</p>
 <p>I'ved named all three physical compute nodes after cats:</p>
 <ol>
-<li><a class="external-link" href="https://en.wikipedia.org/wiki/Aslan"><code>aslan</code></a> - AMD Threadripper system, and main computer node</li>
-<li><a class="external-link" href="https://en.wikipedia.org/wiki/Suns_in_alchemy"><code>green-lion</code></a> - Large Protectli vault</li>
-<li><a class="external-link" href="https://en.wikipedia.org/wiki/Bagheera"><code>bagheera</code></a> - Old MSI latop</li>
+<li><a class="external-link" href="https://en.wikipedia.org/wiki/Aslan"><code>aslan</code><img src="../../images/external-link.svg" /></a> - AMD Threadripper system, and main computer node</li>
+<li><a class="external-link" href="https://en.wikipedia.org/wiki/Suns_in_alchemy"><code>green-lion</code><img src="../../images/external-link.svg" /></a> - Large Protectli vault</li>
+<li><a class="external-link" href="https://en.wikipedia.org/wiki/Bagheera"><code>bagheera</code><img src="../../images/external-link.svg" /></a> - Old MSI latop</li>
 </ol>
 <p>Click on the links to see a bit behind each name. I must confess, I'm not fully aware of the history of <code>green-lion</code> within the field of alchemy, so I hope it doesn't mean something terrible!</p>
 <p>According to ChatGPT:</p>
 <blockquote>
 <p>In essence, the Green Lion is a metaphor for transformation, representing both the destructive and creative forces in alchemy.</p>
 </blockquote>
-<p>These are running in containers manually deployed using <a class="external-link" href="https://docs.docker.com/compose/">Docker Compose</a>. Most of them are running on <code>aslan</code>, with some running in "high availability" mode, with containers running on both <code>aslan</code> and <code>green-lion</code>. An <a class="external-link" href="nginx.com">nginx</a> reverse proxy runs on <code>gateway</code> proxying traffic and terminating SSL using <a class="external-link" href="letsencrypt.org">Let's Encrypt</a>.</p>
+<p>These are running in containers manually deployed using <a class="external-link" href="https://docs.docker.com/compose/">Docker Compose<img src="../../images/external-link.svg" /></a>. Most of them are running on <code>aslan</code>, with some running in "high availability" mode, with containers running on both <code>aslan</code> and <code>green-lion</code>. An <a class="external-link" href="nginx.com">nginx<img src="../../images/external-link.svg" /></a> reverse proxy runs on <code>gateway</code> proxying traffic and terminating SSL using <a class="external-link" href="letsencrypt.org">Let's Encrypt<img src="../../images/external-link.svg" /></a>.</p>
 <p>I'd like to leave all of these services running with close to zero downtime, while deploying new services using increasingly more advanced techniques, culminating in a platform built on top of Kubernetes.</p>
-<p>To do so, I'm going to first get some automation in place to configure and manage these physical servers. Then I'll move the manual configuration of my existing service into Ansible, and then from there will setup CI using <a class="external-link" href="drone.io">Drone CI</a>.</p>
+<p>To do so, I'm going to first get some automation in place to configure and manage these physical servers. Then I'll move the manual configuration of my existing service into Ansible, and then from there will setup CI using <a class="external-link" href="drone.io">Drone CI<img src="../../images/external-link.svg" /></a>.</p>
 <h1 id="installing-and-testing-ansible">Installing and testing Ansible</h1>
 <h2 id="what-is-ansible-why-am-i-using-it">What is Ansible. Why am I using it?</h2>
 <p>I've used Ansible a few times to deploy web applications and configure servers. I don't love the giant collection of templated YAML, and yet, it provides too much value to ignore.</p>
