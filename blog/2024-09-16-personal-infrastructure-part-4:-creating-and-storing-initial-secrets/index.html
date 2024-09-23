@@ -107,7 +107,10 @@
 <p>In this post, I describe my technique for automating the creation of initial secrets for use in Ansible playbooks.</p>
 <p>Most applications need some secret state for operation. This includes passwords for database connections, random numbers used for security purposes, API keys, SSH keys, and more.</p>
 <p>Some of these secrets are user-defined, and some come from third-party or external services. User-defined secrets need to be generated at least once when deploying the application, and possibly more if a secret rotation strategy is used. For this post, I will describe a simple way to generate secrets that integrates nicely with Ansible.</p>
-<p>Some people prefer to use features built into Ansible, such as <a class="external-link" href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/password_lookup.html"><code>ansible.builtin.password</code><img src="../../images/external-link.svg" /></a>, but I prefer my method as it integrates nicely into my vault setup and gracefully handles adding new initial secrets throughout the development process.</p>
+<p>Some people prefer to use features built into Ansible, such as <a class="external-link" href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/password_lookup.html"><code>ansible.builtin.password</code><svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, but I prefer my method as it integrates nicely into my vault setup and gracefully handles adding new initial secrets throughout the development process.</p>
 <h2 id="technique">Technique</h2>
 <p>I use a small Python program to manage the creation of secrets. I use this in combination with the Ansible Vault and an Ansible <code>role</code> to create secrets on the first run and if new secrets are created, store them in a vault, and then inject them as <code>facts</code> into the subsequent roles.</p>
 <p><strong>Python Program</strong>
@@ -254,7 +257,10 @@ The Python program takes in a list of secrets from stdin, the name of a YAML fil
 <span class="w">      </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secrets_changes.stdout == &quot;&quot;</span>
 </code></pre></div>
 
-<p>With these two components in place, all that is left to do is load the secrets into <a class="external-link" href="https://www.redhat.com/sysadmin/playing-ansible-facts"><code>facts</code><img src="../../images/external-link.svg" /></a>, and use them in other roles in my playbook.</p>
+<p>With these two components in place, all that is left to do is load the secrets into <a class="external-link" href="https://www.redhat.com/sysadmin/playing-ansible-facts"><code>facts</code><svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, and use them in other roles in my playbook.</p>
 <div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Web Servers</span>
 <span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web:!localhost</span>
 <span class="w">  </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">remote</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">staging</span><span class="p p-Indicator">]</span>

@@ -105,7 +105,10 @@
     <div class="pt-4">
     <p><img alt="Image of high tech secure vault" src="../../images/ansible-vault-1.webp" /></p>
 <p>In this post, I'm going to explain one way to store secrets when using Ansible.</p>
-<p>Ansible has the ability to encrypt and decrypt data, using what it calls the <a class="external-link" href="https://docs.ansible.com/ansible/latest/vault_guide/index.html">Ansible Vault<img src="../../images/external-link.svg" /></a>.</p>
+<p>Ansible has the ability to encrypt and decrypt data, using what it calls the <a class="external-link" href="https://docs.ansible.com/ansible/latest/vault_guide/index.html">Ansible Vault<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>.</p>
 <h2 id="introduction">Introduction</h2>
 <p>Many services require passwords, keys and other secrets. Some are used to access systems and services outside of the ansible deployment, and many are often randomly generated during the initial setup for use within the deployment.</p>
 <p>In both cases, I like encrypting these using Ansible Vault. To make it a bit smoother, I take advantage of a few Ansible features.

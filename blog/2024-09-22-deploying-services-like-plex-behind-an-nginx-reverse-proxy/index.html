@@ -104,15 +104,24 @@
     
     <div class="pt-4">
     <p><img alt="Sci-Fi server rooms showing nginx reverse proxy symbolically" src="../../images/nginx-reverse-proxy.webp" /></p>
-<p>In this post, I describe a method for hosting any straightforward web service behind an <a class="external-link" href="http://nginx.org">nginx<img src="../../images/external-link.svg" /></a> reverse proxy with automatically renewing Let's Encrypt SSL Certificates.</p>
-<p>There are numerous web applications that can be self-hosted. I love checking out <a class="external-link" href="https://github.com/awesome-selfhosted/awesome-selfhosted">awesome-selfhosted<img src="../../images/external-link.svg" /></a> on GitHub for ideas. These services differ in many ways: they are written in different languages, have different methods for hosting, handling SSL, and more. Hosting them easily with an automatically renewing SSL certificate is quite simple using <code>nginx</code> in a reverse proxy configuration.</p>
+<p>In this post, I describe a method for hosting any straightforward web service behind an <a class="external-link" href="http://nginx.org">nginx<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> reverse proxy with automatically renewing Let's Encrypt SSL Certificates.</p>
+<p>There are numerous web applications that can be self-hosted. I love checking out <a class="external-link" href="https://github.com/awesome-selfhosted/awesome-selfhosted">awesome-selfhosted<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> on GitHub for ideas. These services differ in many ways: they are written in different languages, have different methods for hosting, handling SSL, and more. Hosting them easily with an automatically renewing SSL certificate is quite simple using <code>nginx</code> in a reverse proxy configuration.</p>
 <h2 id="architecture">Architecture</h2>
 <p><img alt="Architecture diagram with internet, proxy and 3 services" src="../../images/drawio/nginx-reverse-proxy.svg" /></p>
 <p>In this setup, there is a computer running <code>nginx</code> with a public IP address. There is a DNS record for every service behind the proxy. I typically use one DNS A record for the <code>nginx</code> reverse proxy and create a <code>CNAME</code> record for each service.</p>
 <p>This minimizes the amount of code and potentially vulnerable software running on a publicly accessible computer. Certbot can run in one place, easily updating all SSL certificates, and <code>nginx</code> can terminate SSL quickly and reliably.</p>
 <p>All the backend services can therefore run unencrypted on port 80, as they are behind a firewall with private IPs in a trusted environment. This simplifies deploying services, as a bespoke SSL configuration is not required.</p>
 <h4 id="security-improvements">Security Improvements</h4>
-<p>Although running on port 80 in the private address space is "fine," it would be more secure to use SSL between <code>nginx</code> and the services. However, doing this manually is quite annoying, and setting up a proper Certificate Authority and secrets management strategy is beyond the scope of this article. In a later article, I'll describe how to further secure this setup once I have <a class="external-link" href="https://www.vaultproject.io">Ansible Vault<img src="../../images/external-link.svg" /></a> running in a private "core services" cluster.</p>
+<p>Although running on port 80 in the private address space is "fine," it would be more secure to use SSL between <code>nginx</code> and the services. However, doing this manually is quite annoying, and setting up a proper Certificate Authority and secrets management strategy is beyond the scope of this article. In a later article, I'll describe how to further secure this setup once I have <a class="external-link" href="https://www.vaultproject.io">Ansible Vault<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> running in a private "core services" cluster.</p>
 <h2 id="step-by-step">Step By Step</h2>
 <p>If you want to recreate something similar, you may follow these steps:</p>
 <h3 id="1-dns-setup">1. DNS Setup</h3>
@@ -127,7 +136,10 @@
 
 <h2 id="2-nginx-setup">2. nginx setup</h2>
 <h3 id="prerequisites">Prerequisites</h3>
-<p>This section assumes that you have <code>nginx</code> installed on a server. If not, please install it. Digital Ocean has a comprehensive guide that I recommend: <a class="external-link" href="https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04">Installing Nginx on Ubuntu 20.04<img src="../../images/external-link.svg" /></a>.</p>
+<p>This section assumes that you have <code>nginx</code> installed on a server. If not, please install it. Digital Ocean has a comprehensive guide that I recommend: <a class="external-link" href="https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04">Installing Nginx on Ubuntu 20.04<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>.</p>
 <p>This guide covers more than is strictly necessary, but it's good information to know.</p>
 <h3 id="configuration">Configuration</h3>
 <p>For each service behind <code>nginx</code>, you will need a <code>server</code> block somewhere in the collection of files that <code>nginx</code> loads for its configuration.</p>
@@ -195,7 +207,16 @@ nginx:<span class="w"> </span>configuration<span class="w"> </span>file<span cla
 <li>Check the logs from the backend</li>
 </ol>
 <h2 id="3-get-an-ssl-certificate-that-automatically-renews">3. Get an SSL Certificate that automatically renews</h2>
-<p><a class="external-link" href="https://certbot.eff.org">Certbot<img src="../../images/external-link.svg" /></a> in combination with <a class="external-link" href="https://letsencrypt.org">Let's Encrypt<img src="../../images/external-link.svg" /></a> makes it very easy to get a free SSL certificate. Digital Ocean has another great article on this. Check out <a class="external-link" href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04">How To Secure Nginx with Let's Encrypt on Ubuntu 20.04<img src="../../images/external-link.svg" /></a></p>
+<p><a class="external-link" href="https://certbot.eff.org">Certbot<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> in combination with <a class="external-link" href="https://letsencrypt.org">Let's Encrypt<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> makes it very easy to get a free SSL certificate. Digital Ocean has another great article on this. Check out <a class="external-link" href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04">How To Secure Nginx with Let's Encrypt on Ubuntu 20.04<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></p>
 <p>If you just want to jump into it, it's as simple as :</p>
 <h3 id="install-certbot">Install Certbot</h3>
 <div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>certbot<span class="w"> </span>python3-certbot-nginx
@@ -259,7 +280,10 @@ nginx:<span class="w"> </span>configuration<span class="w"> </span>file<span cla
 </ol>
 <h3 id="notes-for-running-plex-server">Notes for Running Plex Server</h3>
 <p>To run Plex efficiently behind an <code>nginx</code> reverse proxy, you can make some additional edits to the configuration file.</p>
-<p>Check out <a class="external-link" href="https://github.com/toomuchio/plex-nginx-reverseproxy/blob/master/nginx.conf">plex nginx.conf<img src="../../images/external-link.svg" /></a> on GitHub for an extensively tweaked file.</p>
+<p>Check out <a class="external-link" href="https://github.com/toomuchio/plex-nginx-reverseproxy/blob/master/nginx.conf">plex nginx.conf<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> on GitHub for an extensively tweaked file.</p>
 <p>I've settled on a subset of the tweaks, notably:</p>
 <ul>
 <li>HTTP/2</li>
