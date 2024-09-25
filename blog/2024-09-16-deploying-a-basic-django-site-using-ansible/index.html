@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Deploying A Basic Django Site using Ansible | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaac.cc/blog/2024-09-16-deploying-a-basic-django-site-using-ansible">
+    <meta property="og:title" content="Deploying A Basic Django Site using Ansible | Programming Reality">
+    <meta property="og:description" content="Background
+When I'm not [[blog/01-personal-infrastructure|building the new internet]], I am also working on a number of other projects and businesses to support myself. One of these is a small online store selling spiritual themed clothing. For this store, I need a basic website that allows people to buy clothing. I could use a one of many online e-commerce platforms, but I want complete control over the site and features, and am choosing to build it from scratch.">
+    <meta property="og:image" content="https://isaac.cc//images/django-site-1.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-16-deploying-a-basic-django-site-using-ansible">
+    <meta property="twitter:title" content="Deploying A Basic Django Site using Ansible | Programming Reality">
+    <meta property="twitter:description" content="Background
+When I'm not [[blog/01-personal-infrastructure|building the new internet]], I am also working on a number of other projects and businesses to support myself. One of these is a small online store selling spiritual themed clothing. For this store, I need a basic website that allows people to buy clothing. I could use a one of many online e-commerce platforms, but I want complete control over the site and features, and am choosing to build it from scratch.">
+    <meta property="twitter:image" content="https://isaac.cc//images/django-site-1.png">
+
+    <!-- Existing meta tags and links -->
+    <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Deploying A Basic Django Site using Ansible",
+        "url": "",
+        "datePublished": "2024-09-16 00:00:00",
+        "keywords": ["blog", "development", "infrastructure", "ansible"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst",
+            "url": "https://isaac.cc/about"
+        }
+    }
+    </script>
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-base-path="../../">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Programming Reality</a>
+            <input type="checkbox" id="navbarToggle" class="d-none">
+            <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="light-dropdown-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                </span>
+            </label>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
+        
+<div class="container">
+<article class="article mx-auto article-wide">
+    <h1 class="mt-1 mb-1">Deploying A Basic Django Site using Ansible</h1>
+    <p class="text-muted">
+        <small>Published on September 16, 2024</small>
+        | <small>Last updated on September 20, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
+        
+        <a href="../../tags/development" class="badge bg-secondary text-decoration-none link-light me-1">#development</a>
+        
+        <a href="../../tags/infrastructure" class="badge bg-secondary text-decoration-none link-light me-1">#infrastructure</a>
+        
+        <a href="../../tags/ansible" class="badge bg-secondary text-decoration-none link-light me-1">#ansible</a>
+        
+    </div>
+    
+    <div class="pt-4">
+    <p><img alt="Silhouette of man magically controlling computer windows" src="../../images/django-site-1.webp" /></p>
+<p>In this post I describe deploying a simple <a class="external-link" href="https://www.djangoproject.com">Django<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> based web application using Ansible into a production environment for use as an online storefront for a small business.</p>
+<h2 id="background">Background</h2>
+<p>When I'm not <a class="wikilink internal-link" href="../2024-09-02-personal-microservices-infrastructure-project">building the new internet</a>, I am also working on a number of other projects and businesses to support myself. One of these is a small online store selling spiritual themed clothing. For this store, I need a basic website that allows people to buy clothing. I could use a one of many online e-commerce platforms, but I want complete control over the site and features, and am choosing to build it from scratch.</p>
+<p>The store will be built using <a class="external-link" href="https://www.djangoproject.com">Django<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, and accept payments through <a class="external-link" href="https://stripe.com/">Stripe<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>.</p>
+<p>This project will be a good learning experience, and also demonstrate how the "legacy" method of deploying applications can be improved.</p>
+<h2 id="the-plan">The Plan</h2>
+<h3 id="human-objectives">"Human" Objectives</h3>
+<p>I like starting all projects with some idea of what "success" looks like. For this project, success means:</p>
+<ol>
+<li>The online store for this business is up and running well</li>
+<li>I have a well-written document describing the process</li>
+<li>I know what went well, and what can be improved</li>
+</ol>
+<p>Some of these words are pulling a lot of weight. Notably, the phrase "running well" can mean many things.</p>
+<p>I define it as:</p>
+<ol>
+<li>People can buy shirts successfully</li>
+<li>The website does not go down</li>
+<li>If it does go down, I will know about it, and can fix it easily</li>
+<li>I can make changes easily without worrying about breaking anything</li>
+</ol>
+<h3 id="technical-objectives">Technical Objectives</h3>
+<p>At the end of this endeavor, I'll have created a fully functioning system that is easy to change and maintain. It will be self-contained, and not require me to remain engaged with expert-level focus. </p>
+<p>I can distill much of what I've learned through the years to: automate everything. By automating everything, I have to explicitly document every step in the form of the "code" that does the automation. This forces me to not let anything slip through the cracks, like a one-off hack I find on stack overflow, or that password I set manually, or file permission I needed to change in a panic.</p>
+<p>At the end of this I project I will have:</p>
+<ol>
+<li>A folder full of python code that is the core Django web application</li>
+<li>A Docker container for the application containing a working Django application</li>
+<li>A docker container for an <code>nginx</code> proxy for serving static files</li>
+<li>Secure management of secrets such as API keys and database passwords</li>
+<li>A deployment of these containers to real servers, in "the cloud" and physically at home</li>
+<li>Tools to monitor the running website</li>
+<li>Tools to automate all aspects of the deployment</li>
+</ol>
+<h3 id="assumptions">Assumptions</h3>
+<p>I will assume that I (or you the reader) has a fully functioning Django application that follows best practices. </p>
+<p>Specifically, I will assume:</p>
+<ol>
+<li>The Django application does not have any esoteric requirements, and can easily be run locally with <code>manage.py runserver</code></li>
+<li>The application does not have and hard-coded keys, credentials, etc, and instead loads these from the operating systems environment</li>
+<li>The application does not serve static files directly. These will be served either by a simple web server</li>
+<li>The application has logging and error handling setup. Notably, I like using <a class="external-link" href="sentry.io">Sentry<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> to monitor and keep tabs on my application</li>
+</ol>
+<p>In addition, I will assume:</p>
+<ol>
+<li>This site will be deployed to "The Cloud". I will be deploying to Digital Ocean</li>
+<li>The site will use an external load balancer that will handle SSL termination. I will again use one from Digital Ocean</li>
+<li>The site will use a managed database hosted by the cloud provider</li>
+</ol>
+<p>With these assumptions out of the way, let's get started!</p>
+<p>If you'd like to learn more about Deploying Django, check out the resources:</p>
+<ul>
+<li>https://docs.djangoproject.com/en/5.1/howto/deployment/</li>
+<li>https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Deployment</li>
+</ul>
+<h1 id="architectural-overview">Architectural Overview</h1>
+<p>Here is my go-to architecture for small, low-traffic sites:</p>
+<ol>
+<li>Frontend load balancer provided by a cloud hosting provider</li>
+<li>One or more containerized applications, running Django, with an <code>nginx</code> reverse proxy in front of them handling static files. These are orchestrated using <code>docker compose</code>.</li>
+<li>Managed database provided by cloud hosting provider</li>
+<li>Ansible playbook to set everything up</li>
+</ol>
+<p>I'll describe the steps I take below in greater detail. This isn't intended to be a tutorial, just a rough overview. </p>
+<h1 id="steps">Steps</h1>
+<h3 id="1-do-the-annoying-manual-steps-first">1. Do the Annoying Manual Steps First</h3>
+<p>I like getting something working quickly to get momentum going. For this step, I'll go ahead and do the manual steps needed to deploy a site.</p>
+<ol>
+<li>Ensure you have a domain name. I like getting mine from <a class="external-link" href="http://gandi.net">Gandi<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></li>
+<li>Provision a "Droplet" in Digital Ocean. Configure it to use an SSK key. See <a class="external-link" href="https://docs.digitalocean.com/products/droplets/how-to/create/">How to Create a Droplet<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> for more information</li>
+<li>Provision a  <a class="external-link" href="https://docs.digitalocean.com/products/networking/load-balancers/">Load Balancer<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> in Digital Ocean. Specifically, I configure it to <a class="external-link" href="https://docs.digitalocean.com/products/networking/load-balancers/how-to/ssl-termination/">terminate SSL<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, and automatically get new certificates from <a class="external-link" href="https://letsencrypt.org">Let's Encrypt<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> automatically. This is easy if you <a class="external-link" href="https://docs.digitalocean.com/products/networking/dns/">manage your domain<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> in Digital Ocean</li>
+<li>Connect to your Droplet and do the bare minimum to host something. I like just using <code>python3 http.server 80</code> in a folder with a simple <code>index.html</code>. You may also want to make a <code>health</code> directory with another <code>index.html</code> in it so that Digital Ocean will consider this server "healthy."</li>
+<li>Configure the Digital Ocean firewall so the web server box is only accessible on port 80 via the load balancer, and your home IP address on port 22 for ssh. Verify you can still SSH into the box, and cannot access it directly via HTTP, while it is still accessible through the load balancer.</li>
+</ol>
+<p>Having done this, I can verify the load balancer and SSL termination are working, and can move on to deploying a working site.</p>
+<h3 id="2-setup-a-staging-environment">2. Setup a Staging Environment</h3>
+<p>If you want to go ahead and deploy straight to "production", skip this step. I find it very useful to have an environment that is very similar to how I will run the app in production, and use this to test.</p>
+<p>In my case, I have my own custom nginx load balancer, and I setup to SSL terminate and reverse proxy <code>staging.example.com</code> </p>
+<p>Alternatively, you can spin up another Digital Ocean droplet, and repeat the manual steps with the staging environment.</p>
+<h3 id="3-consider-secret-management">3. Consider Secret Management</h3>
+<p>For this site, there are a handful of secrets and configuration values. I keep the non-sensitive ones stored directly in version control, and the sensitive ones encrypted and stored in an <a class="external-link" href="https://docs.ansible.com/ansible/latest/vault_guide/index.html">Ansible Vault<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> file.</p>
+<p>My Django application itself does not store any secrets, but loads them from <a class="external-link" href="https://en.wikipedia.org/wiki/Environment_variable">Environment Variables<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></p>
+<p>A Django project loads its runtime settings by importing a <a class="external-link" href="https://docs.djangoproject.com/en/5.1/topics/settings/">Django settings<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> module. This is a python file with various global variables that are used by other parts of the application.</p>
+<p>I have actually created three separate settings modules, a<code>base</code> a <code>local</code> and a <code>production</code>. The <code>local</code> and <code>production</code> modules import the <code>base</code> module, which contains settings that do not change between environments.</p>
+<p>The <code>local</code> and <code>production</code> modules both use the <a class="external-link" href="https://pypi.org/project/python-dotenv/">python-dotenv<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> package to load settings from environment variables.</p>
+<p>For example, my <code>local.py</code> settings module begins like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>
+
+
+<span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/&#39;</span>
+
+<span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;django.db.backends.sqlite3&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SITE_NAME</span><span class="si">}</span><span class="s1">.sqlite&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h4 id="setting-environment-variables-at-runtime">Setting Environment Variables at Runtime</h4>
+<p>To set environment variables at runtime, the <a class="external-link" href="https://pypi.org/project/python-dotenv/">python-dotenv<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> looks for a <code>.env</code> file in the current working directory, and if it finds one, sets all the described environment variables. For development, I (semi) manually maintain a <code>.env</code> file.</p>
+<p>For production, I create a <code>.env</code> file during the build process from a template file, and copy it to the production server during the deployment phase. Prior to creating the container, the container runtime (in this case Docker with Docker Compose) loads the the <code>.env</code> file and sets the environment variables directly. This avoids having to mount the <code>.env</code> file in the Docker container, and removes one Python dependency. </p>
+<p>I am currently debating whether I want to forego the <a class="external-link" href="https://pypi.org/project/python-dotenv/">python-dotenv<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>  library altogether, and use a different tool to load the <code>.env</code> on my development system. </p>
+<div class="codehilite"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">SECRET_KEY={{django_secret_key}}</span>
+<span class="l l-Scalar l-Scalar-Plain">DEBUG=False</span>
+<span class="l l-Scalar l-Scalar-Plain">POSTGRES_PORT=5432</span>
+<span class="l l-Scalar l-Scalar-Plain">POSTGRES_HOST=db</span>
+<span class="l l-Scalar l-Scalar-Plain">POSTGRES_USER={{postgres_user}}</span>
+<span class="l l-Scalar l-Scalar-Plain">POSTGRES_PASSWORD={{postgres_password}}</span>
+<span class="l l-Scalar l-Scalar-Plain">POSTGRES_DB={{postgres_db}}</span>
+
+<span class="l l-Scalar l-Scalar-Plain">DJANGO_SETTINGS_MODULE={{site_prefix}}.settings.production</span>
+<span class="l l-Scalar l-Scalar-Plain">ALLOWED_HOSTS={{allowed_hosts}}</span>
+
+<span class="l l-Scalar l-Scalar-Plain">ADMIN_USERNAME=admin</span>
+<span class="l l-Scalar l-Scalar-Plain">ADMIN_PASSWORD={{django_admin_password}}</span>
+<span class="l l-Scalar l-Scalar-Plain">ADMIN_EMAIL={{admin_email}}</span>
+
+<span class="l l-Scalar l-Scalar-Plain">EMAIL_HOST={{email_host}}</span>
+<span class="l l-Scalar l-Scalar-Plain">EMAIL_PORT={{email_port}}</span>
+<span class="l l-Scalar l-Scalar-Plain">EMAIL_USE_TLS={{email_use_tls}}</span>
+<span class="l l-Scalar l-Scalar-Plain">EMAIL_HOST_USER={{email_host_user}}</span>
+<span class="l l-Scalar l-Scalar-Plain">EMAIL_PASSWORD={{email_password}}</span>
+
+<span class="l l-Scalar l-Scalar-Plain">STRIPE_API_KEY={{stripe_api_key}}</span>
+<span class="l l-Scalar l-Scalar-Plain">STRIPE_PUB_KEY={{stripe_pub_key}}</span>
+</code></pre></div>
+
+<h3 id="4-containerize-application-including-static-file-hosting">4. Containerize Application including Static File Hosting</h3>
+<p>I will deploy this application as a <a class="external-link" href="https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/">Docker Container<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>. I am choosing deploy this as a "containerized workload" because I value the determinism and isolation it gives me. Once I create a Docker image, it will run just about the same anywhere, and won't have (much) unintended behavior due to how other services on the server are configured.</p>
+<p>Also, if I'd like to scale up the application, I can simply deploy more containers to more VMs and not have to worry about manual configuration.</p>
+<p>I won't write more about the values of containers, but suffice it to say, after many years of resisting, and crying out "Have operating systems really failed at their key goal of being a platform to run multiple software applications?", I have decided to embrace the the value they provide, and save my criticism of operating systems for a future discussion.</p>
+<p>To "containerize" an application, I consider a few things:</p>
+<ol>
+<li>What operating system is required to run the software?</li>
+<li>What dependencies does it need? </li>
+<li>Does it need other services running? Can and should these be containerized as well?</li>
+<li>What data from the "outside" will the application need? These are settings that will likely live in a <code>.env</code> file.</li>
+</ol>
+<p>Once I answer these questions, I whip up a <code>Dockerfile</code> that pulls in a good base operating system, and populate the file with all the steps necessary to install the dependencies that are needed, excluding any services that I will run in different containers.</p>
+<p>A <code>Dockerfile</code> is kind of like a basic shell script that runs a bunch of commands on container, and allows copying between containers. It differs from a traditional shell script in many ways, a notable one being that each step is potentially cached. Keeping that in mind, I typically arrange my <code>Dockerfile</code> so most expensive things happen first on their own lines, and fast things that change often are later on in the file, so as I rebuild the image, most of the early steps can be skipped and retrieved from cache. </p>
+<p>Here is my <code>Dockerfile</code> for this application:</p>
+<div class="codehilite"><pre><span></span><code><span class="c">###########</span>
+<span class="c"># Builder #</span>
+<span class="c">###########</span>
+
+<span class="c"># pull official base image</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">python:3.11.4-slim-buster</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">builder</span>
+
+<span class="c"># set work directory</span>
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/usr/src/app</span>
+
+<span class="c"># set environment variables</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">PYTHONDONTWRITEBYTECODE</span><span class="o">=</span><span class="m">1</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">PYTHONUNBUFFERED</span><span class="o">=</span><span class="m">1</span>
+
+<span class="c"># install system dependencies</span>
+<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>--no-install-recommends<span class="w"> </span>gcc<span class="w"> </span>
+
+<span class="c"># install python dependencies</span>
+<span class="k">COPY</span><span class="w"> </span>./frozen-reqs.txt<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>wheel<span class="w"> </span>--no-cache-dir<span class="w"> </span>--no-deps<span class="w"> </span>--wheel-dir<span class="w"> </span>/usr/src/app/wheels<span class="w"> </span>-r<span class="w"> </span>frozen-reqs.txt
+
+<span class="c">##############</span>
+<span class="c"># Main Image #</span>
+<span class="c">##############</span>
+
+<span class="c"># pull official base image</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">python:3.11.4-slim-buster</span>
+
+<span class="c"># create directory for the app user</span>
+<span class="k">RUN</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/app
+
+<span class="c"># create the app user</span>
+<span class="k">RUN</span><span class="w"> </span>addgroup<span class="w"> </span>--system<span class="w"> </span>app<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>adduser<span class="w"> </span>--system<span class="w"> </span>--group<span class="w"> </span>app
+
+<span class="c"># create the appropriate directories</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">HOME</span><span class="o">=</span>/home/app
+<span class="k">ENV</span><span class="w"> </span><span class="nv">APP_HOME</span><span class="o">=</span>/home/app/rev
+<span class="k">RUN</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$APP_HOME</span>/staticfiles<span class="w"> </span><span class="nv">$APP_HOME</span>/mediafiles<span class="w"> </span><span class="nv">$APP_HOME</span>/logs
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">$APP_HOME</span>
+
+<span class="c"># install dependencies</span>
+<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>--no-install-recommends<span class="w"> </span>netcat<span class="w"> </span>ffmpeg
+
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/usr/src/app/wheels<span class="w"> </span>/wheels
+<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/usr/src/app/frozen-reqs.txt<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache<span class="w"> </span>/wheels/*
+
+<span class="c"># install nodejs</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">NODE_VERSION</span><span class="o">=</span><span class="m">20</span>.11.0
+<span class="k">ENV</span><span class="w"> </span><span class="nv">NVM_DIR</span><span class="o">=</span><span class="nv">$HOME</span>/.nvm
+
+<span class="c"># Install curl and nvm</span>
+<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>curl<span class="w"> </span>-o-<span class="w"> </span>https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+
+<span class="c"># Install Node.js using nvm</span>
+<span class="k">RUN</span><span class="w"> </span>.<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NVM_DIR</span><span class="s2">/nvm.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>nvm<span class="w"> </span>install<span class="w"> </span><span class="si">${</span><span class="nv">NODE_VERSION</span><span class="si">}</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>.<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NVM_DIR</span><span class="s2">/nvm.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>nvm<span class="w"> </span>use<span class="w"> </span><span class="si">${</span><span class="nv">NODE_VERSION</span><span class="si">}</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>.<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$NVM_DIR</span><span class="s2">/nvm.sh&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>nvm<span class="w"> </span><span class="nb">alias</span><span class="w"> </span>default<span class="w"> </span><span class="si">${</span><span class="nv">NODE_VERSION</span><span class="si">}</span>
+
+<span class="c"># Update PATH</span>
+<span class="k">ENV</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$NVM_DIR</span><span class="s2">/versions/node/v</span><span class="si">${</span><span class="nv">NODE_VERSION</span><span class="si">}</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+
+<span class="c"># copy project</span>
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span><span class="nv">$APP_HOME</span>
+
+<span class="c"># Create log directory and set permissions</span>
+<span class="k">RUN</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/app/logs<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">755</span><span class="w"> </span>/home/app/logs
+<span class="k">RUN</span><span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>app:app<span class="w"> </span>/home/app/logs
+
+
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">$APP_HOME/store/frontend</span>
+<span class="k">RUN</span><span class="w"> </span>npm<span class="w"> </span>install
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">$APP_HOME</span>
+
+
+<span class="c"># Ensure log directory is writable</span>
+<span class="k">RUN</span><span class="w"> </span>chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">755</span><span class="w"> </span><span class="nv">$APP_HOME</span>/logs
+
+<span class="k">RUN</span><span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/\r$//g&#39;</span><span class="w">  </span><span class="nv">$APP_HOME</span>/entrypoint.prod.sh
+<span class="k">RUN</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w">  </span><span class="nv">$APP_HOME</span>/entrypoint.prod.sh
+<span class="k">RUN</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w">  </span><span class="nv">$APP_HOME</span>/migrate.sh
+
+<span class="c"># chown all the files to the app user</span>
+<span class="k">RUN</span><span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>app:app<span class="w"> </span><span class="nv">$APP_HOME</span>
+
+<span class="c"># change to the app user</span>
+<span class="k">USER</span><span class="w"> </span><span class="s">app</span>
+
+<span class="c"># run entrypoint.prod.sh</span>
+<span class="k">ENTRYPOINT</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/home/app/rev/entrypoint.prod.sh&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>There is a basic entrypoint script that waits for Postgres to be happy before continuing. This avoids a few error messages if the web server comes up first. </p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># entypoint.prod.sh</span>
+
+<span class="c1">#!/bin/sh</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATABASE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="w"> </span><span class="o">]</span>
+<span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Waiting for postgres...&quot;</span>
+
+<span class="w">    </span><span class="k">while</span><span class="w"> </span>!<span class="w"> </span>nc<span class="w"> </span>-z<span class="w"> </span><span class="nv">$SQL_HOST</span><span class="w"> </span><span class="nv">$SQL_PORT</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">      </span>sleep<span class="w"> </span><span class="m">0</span>.1
+<span class="w">    </span><span class="k">done</span>
+
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;PostgreSQL started&quot;</span>
+<span class="k">fi</span>
+
+<span class="nb">exec</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+<p>There is much to learn about Dockerfiles, including techniques to optimize both the build time, and the final image size. I may take some time to optimize image size later, which is typically done by purging a bunch of files after the work is done, or using multiple images, one to build the application, and another to be the runtime host of it, that doesn't have all the build dependencies. </p>
+<p>In the above file, one optimization I'd like to make is to not include node in the final image. However, I need it since building the frontend bundle happens during the <a class="external-link" href="https://docs.djangoproject.com/en/5.1/topics/migrations/">migration<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>. I will improve this in the future, and copy the optimized bundle into the image, and not bundle node with it.</p>
+<h4 id="static-file-hosting">Static File Hosting</h4>
+<p>Django sites in production typically do not serve "static" files whose content does not change during runtime. Static files are primarily images, css, Javascript and and any other static content. In a Django site, these are added manually to the project, or are the result of compiling a frontend bundle of Javascript, css and more into production bundles.</p>
+<p>I typically serve static files from an <a class="external-link" href="https://nginx.org/en/">nginx<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> server deployed as another container in front of Django. For a high traffic site, it may make sense to copy static files to a CDN or object store like S3. </p>
+<p>To set this up, I create an extremely simple <code>Dockerfile</code></p>
+<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">nginx:1.25</span>
+
+<span class="k">RUN</span><span class="w"> </span>rm<span class="w"> </span>/etc/nginx/conf.d/default.conf
+<span class="k">COPY</span><span class="w"> </span>nginx.conf<span class="w"> </span>/etc/nginx
+</code></pre></div>
+
+<p>The <code>nginx.conf</code> for this container is as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">worker_processes</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="n">events</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">worker_connections</span><span class="w"> </span><span class="mi">1024</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">http</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">mime</span><span class="o">.</span><span class="n">types</span><span class="p">;</span>
+<span class="w">    </span><span class="n">default_type</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">octet</span><span class="o">-</span><span class="n">stream</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">gzip</span><span class="w"> </span><span class="n">on</span><span class="p">;</span>
+<span class="w">    </span><span class="n">gzip_types</span><span class="w"> </span><span class="n">text</span><span class="o">/</span><span class="n">plain</span><span class="w"> </span><span class="n">text</span><span class="o">/</span><span class="n">css</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">javascript</span><span class="w"> </span><span class="n">text</span><span class="o">/</span><span class="n">xml</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">xml</span><span class="w"> </span><span class="n">application</span><span class="o">/</span><span class="n">xml</span><span class="o">+</span><span class="n">rss</span><span class="w"> </span><span class="n">text</span><span class="o">/</span><span class="n">javascript</span><span class="p">;</span>
+<span class="w">    </span><span class="n">gzip_proxied</span><span class="w"> </span><span class="n">any</span><span class="p">;</span>
+<span class="w">    </span><span class="n">gzip_vary</span><span class="w"> </span><span class="n">on</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">upstream</span><span class="w"> </span><span class="n">django</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">server</span><span class="w"> </span><span class="n">web</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">location</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">proxy_pass</span><span class="w"> </span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">django</span><span class="p">;</span>
+<span class="w">            </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">For</span><span class="w"> </span><span class="o">$</span><span class="n">proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">            </span><span class="n">proxy_set_header</span><span class="w"> </span><span class="n">Host</span><span class="w"> </span><span class="o">$</span><span class="n">host</span><span class="p">;</span>
+<span class="w">            </span><span class="n">proxy_redirect</span><span class="w"> </span><span class="n">off</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">location</span><span class="w"> </span><span class="o">/</span><span class="k">static</span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">alias</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="p">{{</span><span class="w"> </span><span class="n">app_prefix</span><span class="w"> </span><span class="p">}}</span><span class="o">/</span><span class="n">staticfiles</span><span class="o">/</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">location</span><span class="w"> </span><span class="o">/</span><span class="n">media</span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">alias</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="p">{{</span><span class="w"> </span><span class="n">app_prefix</span><span class="w"> </span><span class="p">}}</span><span class="o">/</span><span class="n">mediafiles</span><span class="o">/</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1"># Add health check endpoint</span>
+<span class="w">        </span><span class="n">location</span><span class="w"> </span><span class="o">/</span><span class="n">health</span><span class="o">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">access_log</span><span class="w"> </span><span class="n">off</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="s1">&#39;healthy&#39;</span><span class="p">;</span>
+<span class="w">            </span><span class="n">add_header</span><span class="w"> </span><span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="w"> </span><span class="n">text</span><span class="o">/</span><span class="n">plain</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The main things of not here are </p>
+<ol>
+<li>Proxy configuration. Location <code>/</code> passes all traffic to Django, and sets some headers. </li>
+<li>Static configuration. <code>/static/</code> serves files directly from <code>/home/app/{{ app_prefix }}</code>. The important part here is to copy the static files to the right location prior to running the app</li>
+<li>A health check</li>
+</ol>
+<p>I'll write about copying files to the right location in later steps.</p>
+<p><a class="external-link" href="https://docs.djangoproject.com/en/5.1/howto/static-files/deployment/">Django static files in Production<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></p>
+<h2 id="surprise-subsection-using-docker-compose">Surprise Subsection: Using Docker Compose</h2>
+<p>In order to manage the Django application and nginx reverse proxy as a single unit, I use <a class="external-link" href="https://docs.docker.com/compose/">Docker Compose<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> Docker Compose allows me to bring up a few containers together, configure how network traffic passes between them, and <a class="external-link" href="https://docs.docker.com/engine/storage/volumes/">mount<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> shared directories between containers.</p>
+<p>For static files hosting, the important part is to copy all the static files to a folder (volume in Docker lingo) that is accessible to the nginx container.</p>
+<p>Rather than explain all the details, here is my <code>docker-compose.yaml</code> template, edited slightly for brevity.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">web</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">image_name</span><span class="p p-Indicator">}}</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gunicorn {{site_prefix}}.wsgi:application --bind 0.0.0.0:8000 --workers 5 --threads 2</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static_volume:/home/app/{{site_prefix}}/staticfiles</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">media_volume:/home/app/{{site_prefix}}/mediafiles</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logs_volume:/home/app/{{site_prefix}}/logs</span>
+<span class="w">    </span><span class="nt">env_file</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
+<span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;curl&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-f&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;http://localhost:8000/health/&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30s</span>
+<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
+<span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">    </span><span class="nt">expose</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">migration</span>
+
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:15</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres_data:/var/lib/postgresql/data/</span>
+<span class="w">    </span><span class="nt">env_file</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
+
+<span class="w">  </span><span class="nt">nginx</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">nginx_image</span><span class="p p-Indicator">}}</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">site_prefix</span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">-nginx</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static_volume:/home/app/{{site_prefix}}/staticfiles</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">media_volume:/home/app/{{site_prefix}}/mediafiles</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">nginx_port</span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">:80</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web</span>
+
+<span class="w">  </span><span class="nt">migration</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="nv">image_name</span><span class="p p-Indicator">}}</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">static_volume:/home/app/{{site_prefix}}/staticfiles</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">media_volume:/home/app/{{site_prefix}}/mediafiles</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./migrate.sh</span>
+<span class="w">    </span><span class="nt">env_file</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span>
+
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">postgres_data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">static_volume</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">media_volume</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">logs_volume</span><span class="p">:</span>
+</code></pre></div>
+
+<p>Some important things to notice:</p>
+<ol>
+<li>There are volumes defined for postgres, static files, media files, logs. The static files volume is shared by the migration container and the nginx container.</li>
+<li>All of them use the same <code>.env</code> file.</li>
+</ol>
+<p>I will discuss migrations next</p>
+<h3 id="5-setup-migrations">5. Setup Migrations</h3>
+<p>Django has built in support for database <a class="external-link" href="https://docs.djangoproject.com/en/5.1/topics/migrations/">migrations<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>. In essence, when you change the database layout in code, it is necessary to update the actual database and potentially migrate any data from the old layout to the new one.</p>
+<p>As migrations need to happen before the new application is deployed, I run an ephemeral container every time I push an upgrade. It will connect to the database, and run migrations, and also copy static files to the appropriate place for <code>nginx</code> to host them.</p>
+<p>The ephemeral container is another instance of the main image, with a custom entrypoint script:</p>
+<div class="codehilite"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+
+<span class="c1">#!/bin/bash</span>
+
+<span class="nb">cd</span><span class="w"> </span>frontend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>..
+python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic<span class="w"> </span>--noinput
+python<span class="w"> </span>manage.py<span class="w"> </span>migrate<span class="w"> </span>--noinput
+</code></pre></div>
+
+<h3 id="6-build-docker-images-for-production">6. Build Docker Images for Production</h3>
+<p>To build a docker image for production, simply run the following command:</p>
+<div class="codehilite"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>.<span class="w"> </span>-t<span class="w"> </span>username/image-name:latest
+docker<span class="w"> </span>push<span class="w"> </span>username/image-name:latest
+</code></pre></div>
+
+<p>This can also be done in an automated environment like Drone CI. In this case, rather than running the command directly, you use a plugin.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipeline</span>
+<span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+
+<span class="nt">trigger</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">branch</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">staging</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<span class="w">  </span><span class="nt">event</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
+
+<span class="nt">steps</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build main docker image</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plugins/docker</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rev</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">from_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dockerhub_username</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">from_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dockerhub_password</span>
+<span class="w">      </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">image_name</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">-${DRONE_BRANCH}</span>
+<span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rev/Dockerfile</span>
+<span class="w">      </span><span class="nt">cache_from</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">image_name</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">-${DRONE_BRANCH}</span>
+<span class="w">      </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">latest</span>
+<span class="w">      </span><span class="nt">when</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">changeset</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">site_prefix</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">/Dockerfile</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">site_prefix</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">/**/*</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build nginx docker image</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plugins/docker</span>
+<span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">from_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dockerhub_username</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">from_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dockerhub_password</span>
+<span class="w">      </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">image_name</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">-nginx-${DRONE_BRANCH}</span>
+<span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx/Dockerfile</span>
+<span class="w">      </span><span class="nt">cache_from</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">image_name</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">-nginx-${DRONE_BRANCH}</span>
+<span class="w">      </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">latest</span>
+<span class="w">      </span><span class="nt">when</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">changeset</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx/Dockerfile</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx/**/*</span>
+
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">run ansible playbook</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${username}/ansible:latest</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">SSH_KEY</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">from_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ssh_key_${DRONE_BRANCH}</span>
+<span class="w">      </span><span class="nt">ANSIBLE_HOST_KEY_CHECKING</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;False&quot;</span>
+<span class="w">      </span><span class="nt">ANSIBLE_VAULT_PASSWORD</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">from_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible_vault_password_${DRONE_BRANCH}</span>
+<span class="w">    </span><span class="nt">commands</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdir -p /root/.ssh</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export APP_ENV=${DRONE_BRANCH}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;$${SSH_KEY}&quot; &gt; /root/.ssh/id_ed25519_ansible</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chmod 600 /root/.ssh/id_ed25519_ansible</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;$${ANSIBLE_VAULT_PASSWORD}&quot; &gt; /tmp/vault_password</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible-playbook --inventory playbooks/inventories/${DRONE_BRANCH} --vault-password-file /tmp/vault_password playbooks/playbook.yml --tags &quot;staging,ingress&quot; -vv</span>
+<span class="nn">---</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secret</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dockerconfig</span>
+<span class="nt">get</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">config</span>
+</code></pre></div>
+
+<p>For more info see <a class="wikilink internal-link" href="../2024-09-23-setting-up-continuous-integration-using-drone-ci">Setting up Continuous Integration using Drone CI</a></p>
+<h3 id="7-create-ansible-playbook-to-automate-deployment">7. Create Ansible Playbook to Automate Deployment</h3>
+<p>Now that I've done just about everything except actually deploy the site, I'll discuss the "one last final step" of setting up Ansible. Ansible is a collection of software for automating the installation, management, maintenance and upgrades on collections of computers. It's main strength is that it supports just about any kind of configuration task through plugins, and a frustratingly complete programming environment implemented in YAML.</p>
+<p>Ansible effectively creates a giant "state" data structure by parsing a huge collection of files, running plugins, and taking actions. As it builds up this state, it may take actions that update the state of remote servers to ideally configure them to be in a corresponding state to that of the Ansible files. However, despite having the goal of being declarative, Ansible is inherently more procedural language, so making effective "playbooks" in Ansible lingo is a bit tricky.</p>
+<p>The way I approach Ansible is as follows:</p>
+<h4 id="establish-connectivity-to-hosts-and-create-inventorys">Establish Connectivity to Hosts and create Inventory(s)</h4>
+<p>Ansible operates on an "inventory" of computers that it applies "roles" to will running "playbooks." I describe this in some depth in the article <a class="wikilink internal-link" href="../2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup">Personal Infrastructure Part 1: Introduction and Basic Ansible Setup</a>.</p>
+<p>Once I can ping all the hosts, I go ahead and make a dumb "role" to see if thing work at all. Typically I'll run <code>echo $env</code> and verify the hosts are running commands and picking up the correct variables.</p>
+<h4 id="role-to-deploy-site">Role to Deploy Site</h4>
+<p>Next I create a simple Ansible role to deploy the site. This role assumes a few things:</p>
+<ol>
+<li>There is an <code>env.j2</code> template file that defines all environment variables need at runtime in terms of Ansible facts</li>
+<li>There is a similar <code>compose.yaml.j2</code> that becomes the final <code>docker-compose.yml</code> file for production</li>
+<li>Docker images are available to pull from Dockerhub. See section 7 of this article for more information</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy site</span>
+<span class="w">  </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create project directory</span>
+<span class="w">      </span><span class="nt">ansible.builtin.file</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/opt/containers/ansible/{{</span><span class="nv"> </span><span class="s">site_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">directory</span>
+<span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0755&#39;</span>
+<span class="w">        </span><span class="nt">recurse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Copy Docker Compose template</span>
+<span class="w">      </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">playbook_dir</span><span class="nv"> </span><span class="s">}}/templates/compose.yaml.j2&quot;</span>
+<span class="w">        </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/opt/containers/ansible/{{</span><span class="nv"> </span><span class="s">site_name</span><span class="nv"> </span><span class="s">}}/docker-compose.yml&quot;</span>
+<span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0644&#39;</span>
+<span class="w">      </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create .env file from template</span>
+<span class="w">      </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">playbook_dir</span><span class="nv"> </span><span class="s">}}/templates/.env.j2&quot;</span>
+<span class="w">        </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/opt/containers/ansible/{{</span><span class="nv"> </span><span class="s">site_name</span><span class="nv"> </span><span class="s">}}/.env&quot;</span>
+<span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0600&#39;</span>
+<span class="w">      </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pull Docker images</span>
+<span class="w">      </span><span class="nt">community.docker.docker_compose_v2</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">project_src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/opt/containers/ansible/{{</span><span class="nv"> </span><span class="s">site_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">        </span><span class="nt">files</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;docker-compose.yml&quot;</span>
+<span class="w">        </span><span class="nt">pull</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<span class="w">      </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Start Docker containers</span>
+<span class="w">      </span><span class="nt">community.docker.docker_compose_v2</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">project_src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/opt/containers/ansible/{{</span><span class="nv"> </span><span class="s">site_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">        </span><span class="nt">files</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;docker-compose.yml&quot;</span>
+<span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<span class="w">        </span><span class="nt">pull</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">      </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+
+<h3 id="7-configure-logging-and-error-reporting">7. Configure logging and Error Reporting</h3>
+<p>I typically like error reporting in my production applications. For that I use <a class="external-link" href="https://sentry.io">sentry<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> For a Django project, this is as simple as including this in my <code>settings.py</code> module:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">sentry_sdk</span>
+
+<span class="n">sentry_sdk</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+    <span class="n">dsn</span><span class="o">=</span><span class="s2">&quot;https:/some-long-code.my-sentry-domain.com/5,</span>
+    <span class="c1"># Set traces_sample_rate to 1.0 to capture 100%</span>
+    <span class="c1"># of transactions for performance monitoring.</span>
+    <span class="n">traces_sample_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Now when there is an issue, I can see it via a beautiful web interface, configure alerts and more.</p>
+<p><img alt="Screenshot of Sentry.io Web interface showing example issue" src="../../images/sentry-screenshot-1.png" /></p>
+<h1 id="conclusion">Conclusion</h1>
+<p>This is a rough overview of one method of deploying a small Django site to production in Digital Ocean. It hand-waves over a lot of the nasty iteration that is present in many of these steps. I present them like "you just make this file and it all works", whereas in reality, I maybe spent 10 hours editing a file, running a build command, waiting 2-5 minutes, observing a failure, and trying again. I hope this post helps you avoid some of the same mistakes I made.</p>
+<h2 id="lessons-learned">Lessons Learned</h2>
+<p>I made a few mistakes that I'm aware of, and likely more that I am not aware of. I'll document some of the more annoying ones here so you may avoid making similar mistakes.</p>
+<ol>
+<li>Using a <code>.env</code> file that is expected to be in the same directory as the Django application. This means that I need to "mount" it at runtime, which is annoying</li>
+<li>Not using variables for more parts of scripts and config files. I copied and pasted some of the files from earlier projects. I spent a large amount of time chasing down incorrect configuration stemming from copy paste mistakes</li>
+<li>Not using sane default values for variables. There are some config values that have sane default values that rarely need to change. If I don't run Postgres on a non-standard port, I shouldn't need to worry about that variable</li>
+<li>Using Ansible at all. Although I get a lot of value from Ansible, it's a slow and painful experience to work on. Even with lots of helpful tools, like an Ansible linter, and LLMs helping me write code, it leaves a lot to be desired. I could write a whole criticism of Ansible, and maybe I will in the future. </li>
+<li>Have fun! I've had the most fun when I'm not feeling rushed to finish an article. A little work every day makes progress, even if it's slow at times.</li>
+</ol>
+<p>This post took more words, and simultaneously covered less ground than I had hoped.  If you're interested in any particular aspect of it, please don't hesitate to reach out. I'm open to writing another article or two on any aspects that anyone finds particularly interesting.</p>
+    </div>
+</article>
+    <div class="giscus"></div>
+</div>
+
+    </main>
+
+    <footer class="mt-auto px-4 bg-theme pt-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="https://x.com/dancing_void" class="btn btn-outline-secondary btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="https://github.com/igutekunst" class="btn btn-outline-secondary btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class=" btn btn-outline-secondary btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+    
+
+    <script src="https://giscus.app/client.js"
+        data-repo="igutekunst/igutekunst.github.io"
+        data-repo-id="R_kgDOMqSlJQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOMqSlJc4CiInM"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+</body>
+</html>
