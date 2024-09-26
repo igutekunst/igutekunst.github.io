@@ -335,6 +335,16 @@ nginx:<span class="w"> </span>configuration<span class="w"> </span>file<span cla
 <h3 id="notes-for-ansible-or-other-configuration-management-setup">Notes for Ansible or other Configuration Management Setup</h3>
 <p>There is nothing you need to do here unless you plan on automatically updating the configuration file using a tool like Ansible. If so, you will need to add some logic to your Ansible role to check for the presence of valid SSL certificates. If valid certificates are found, render the full "post certbot" file. If not, render the basic one, run certbot, and then render the "post certbot" file.</p>
     </div>
+
+    <div class="navigation-links mt-5 p-3 d-flex justify-content-between align-items-center">
+        
+        <a href="../2024-09-16-personal-infrastructure-part-4:-creating-and-storing-initial-secrets" class="btn btn-outline-primary flex-grow-1 me-2 text-truncate" style="max-width: 48%;">&larr; Previous: Personal Infrastructure Part 4: Creating and Storing Initial Secrets</a>
+        
+        
+        <a href="../2024-09-23-setting-up-continuous-integration-using-drone-ci" class="btn btn-outline-primary flex-grow-1 ms-2 text-truncate" style="max-width: 48%;">Next: Setting up Continuous Integration using Drone CI &rarr;</a>
+        
+    </div>
+
 </article>
     <div class="giscus"></div>
 </div>
