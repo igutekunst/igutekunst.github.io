@@ -104,6 +104,17 @@
         "date": "2024-09-24"
     },
     {
+        "title": "Core Supporting Services",
+        "url": "/blog/2024-09-25-core-supporting-services",
+        "tags": [
+            "blog",
+            "development",
+            "infrastructure",
+            "ansible"
+        ],
+        "date": "2024-09-25"
+    },
+    {
         "title": "Setting up Continuous Integration using Drone CI",
         "url": "/blog/2024-09-23-setting-up-continuous-integration-using-drone-ci",
         "tags": [

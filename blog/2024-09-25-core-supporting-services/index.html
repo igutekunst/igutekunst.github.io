@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Core Supporting Services | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaac.cc/blog/2024-09-25-core-supporting-services">
+    <meta property="og:title" content="Core Supporting Services | Programming Reality">
+    <meta property="og:description" content="In this post, I will describe the design of the core supporting services that will support the rest of the Personal Cloud.">
+    <meta property="og:image" content="https://isaac.cc//images/core-services-architecture.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-25-core-supporting-services">
+    <meta property="twitter:title" content="Core Supporting Services | Programming Reality">
+    <meta property="twitter:description" content="In this post, I will describe the design of the core supporting services that will support the rest of the Personal Cloud.">
+    <meta property="twitter:image" content="https://isaac.cc//images/core-services-architecture.png">
+
+    <!-- Existing meta tags and links -->
+    <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Core Supporting Services",
+        "url": "",
+        "datePublished": "2024-09-25 00:00:00",
+        "keywords": ["blog", "development", "infrastructure", "ansible"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst",
+            "url": "https://isaac.cc/about"
+        }
+    }
+    </script>
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-base-path="../../">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Programming Reality</a>
+            <input type="checkbox" id="navbarToggle" class="d-none">
+            <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="light-dropdown-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                </span>
+            </label>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
+        
+<div class="container">
+<article class="article mx-auto article-wide">
+    <h1 class="mt-1 mb-1">Core Supporting Services</h1>
+    <p class="text-muted">
+        <small>Published on September 25, 2024</small>
+        | <small>Last updated on September 20, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
+        
+        <a href="../../tags/development" class="badge bg-secondary text-decoration-none link-light me-1">#development</a>
+        
+        <a href="../../tags/infrastructure" class="badge bg-secondary text-decoration-none link-light me-1">#infrastructure</a>
+        
+        <a href="../../tags/ansible" class="badge bg-secondary text-decoration-none link-light me-1">#ansible</a>
+        
+    </div>
+    
+    <div class="pt-4">
+    <p><img alt="Abstract image of system core." src="../../images/core-services-architecture.webp" /></p>
+<p>In this post, I will describe the design of the core supporting services that will support the rest of the Personal Cloud.</p>
+<h2 id="introduction">Introduction</h2>
+<p>The core supporting services provide the foundation and support for building more advanced services, including Kubernetes clusters, load balancers, and more. They exist before any "user-facing" services and make deploying and managing the main services easier. Eventually, I will be running a reliable, highly available set of personal services, including file hosting, calendar, AI services, email, messaging, web hosting, and more.</p>
+<p>I will build out this system using commercial off-the-shelf components, somewhat in the "prosumer" category, as well as rent virtual servers from various cloud providers.</p>
+<h2 id="goals">Goals</h2>
+<p>The goal for this step is to build a core layer of services that will support building out the entire personal cloud. This foundational layer needs to be robust against a variety of failures and provide valuable services to be used later.</p>
+<p>Specifically, I'd like to:</p>
+<ol>
+<li>Be able to quickly create and destroy the second layer of infrastructure.</li>
+<li>Securely manage secrets.</li>
+<li>Establish secure communication between all nodes, from bare metal physical servers to ephemeral containers and virtual machines.</li>
+<li>Observe what is happening in all services, including core support services, in the form of logs, tracing, error reporting, and more.</li>
+<li>Leave existing "legacy" infrastructure untouched until it is smoothly migrated.</li>
+</ol>
+<h2 id="constraints-requirements-and-considerations">Constraints, Requirements, and Considerations</h2>
+<ul>
+<li>I'd like this setup to be reliable and relatively easy to use once up.</li>
+<li>I'd like to use hardware I already have.</li>
+<li>My home internet connection is not very good.</li>
+<li>My friend will let me put hardware in his home and use his connection.</li>
+<li>I will move.</li>
+<li>Power outages occur.</li>
+<li>Internet outages occur.</li>
+<li>Theft or total hardware failure may occur.</li>
+<li>Disk failures may occur.</li>
+<li>Brain outages will occur.</li>
+<li>I have a bunch of "legacy" services running, primarily as <code>docker compose</code> workloads manually started on <code>aslan</code> and <code>green-lion</code>. I'd like these not to be disturbed until they can gracefully be migrated to the new system.</li>
+</ul>
+<p>For this proof of concept, I'd like to use the hardware I have. If I can use a mix of different machines with different hardware and OSs and still build a solid foundation, it helps prove this can be done on commodity hardware.</p>
+<p>I'd like to utilize normal home internet connections for the majority of the connectivity. Ideally, home internet connections would be better. Perhaps building systems like this will create more demand for better home internet. One can dream.</p>
+<p>I have some friends who will let me install "servers" in their homes. However, out of respect for their privacy and to minimize the chance they become hacked, no home IP addresses are ever used for public ingress into the network.</p>
+<p>I live a semi-nomadic life. I've moved just about every year or two since graduating from college in 2013. Therefore, my personal cloud should move with me with minimal disruption.</p>
+<p>Taken together, and chewed primarily by my right brain, these considerations spawn some derived requirements:</p>
+<ol>
+<li>I should be able to add or remove any single node without any ill effects.</li>
+<li>The core of the network should be almost bulletproof, and it should remain possible to fix things in many scenarios. I should be able to SSH into any ground-level server no matter what else I do.</li>
+<li>I should be able to create a functionally identical cluster from backups within hours, if not minutes, assuming "application" data is instantly available.</li>
+<li>There should be backups of all critical data. This includes all configuration for all servers, including keys, topology, Terraform or Pulumi state, as well as any "application" data running on the cluster(s).</li>
+</ol>
+<p>If I shake these requirements around and stir them a few times, a rough design begins to emerge.</p>
+<h3 id="requirement-implementation-table">Requirement Implementation Table</h3>
+<table class="table table-dark">
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Handle power outage</td>
+<td>Servers auto-boot</td>
+</tr>
+<tr>
+<td>Handle internet outage</td>
+<td>Multiple ingress nodes, multiple backend servers</td>
+</tr>
+<tr>
+<td>Never lose connectivity</td>
+<td>Have all servers join Wireguard P2P mesh, and rarely mess with "ground level" servers<br></td>
+</tr>
+<tr>
+<td>Quickly create and destroy clusters</td>
+<td>Automate deploying clusters. Have core supporting infrastructure to make this easy</td>
+</tr>
+<tr>
+<td>Easily recover from serious failures</td>
+<td>Create entire cluster automatically from description in code. Backup all the things. Test that the backups work, and intentionally break stuff</td>
+</tr>
+<tr>
+<td>Easy adding and removing of nodes</td>
+<td>Make sure that no node is critical. Make services runnable on any, or at least multiple nodes.</td>
+</tr>
+<tr>
+<td>I will move</td>
+<td>There should be no requirement on the home internet connection. Don't use static IPs.  Connect everything with Wireguard/Headscale</td>
+</tr>
+</tbody>
+</table>
+<p>Taking all these factors into consideration, here's what I've arrived at:</p>
+<h3 id="physical-server-setup">Physical Server Setup</h3>
+<p>Note: I consider all of these "physical" even though some of them are VPS. They are the lowest level computers my personal cloud will have knowledge of.</p>
+<p>I will set up some physical servers at my home. They will be connected to a standard, boring Ethernet switch behind a pfSense router that serves as a Wireguard server. Anything connected to this server, or remotely via Wireguard, is IP routable via a private subnet. Right now, I have <code>aslan</code> and <code>green-lion</code> connected, and <code>bagheera</code> connected and powered off.</p>
+<p>I will rent three virtual machines: <code>gateway</code>, the primary ingress node, a small VPS hosted geographically near me in Los Angeles; <code>snow-leopard</code>, a very disk-heavy dedicated server also located geographically close to me; and <code>palantir</code> (name undecided yet, I may pick another cat), a secondary ingress node from a different vendor in a different region.</p>
+<p><em>Public</em> traffic will enter my network through one of the two ingress nodes, which will have public IP addresses. A load balancer will route the traffic to the correct backend node. As the architecture advances, much traffic will flow through an API gateway, which will authenticate the agent making the request and pass on headers so that many backend services need not worry about authentication and authorization.</p>
+<h3 id="probable-software-stack">Probable Software Stack</h3>
+<ul>
+<li>Setup <a class="external-link" href="https://www.headscale.net/">Headscale<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> to create a management network for all "physical" servers</li>
+<li>Use <a class="external-link" href="https://www.packer.io/">Packer<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> to create standardized VM images</li>
+<li>Use <a class="external-link" href="https://www.terraform.io/">Terraform<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>  or <a class="external-link" href="https://www.pulumi.com">Pulumi IaC<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> to start VMs on physical servers.</li>
+<li>Set up <a class="external-link" href="https://www.nomadproject.io/">Nomad<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, with clients on all VMs and physical servers, and the Nomad server on one or more VMs.</li>
+<li>Deploy <a class="external-link" href="https://www.vaultproject.io/">Vault<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> for secrets management</li>
+<li>Set up monitoring tools (e.g., <a class="external-link" href="https://prometheus.io/">Prometheus<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, <a class="external-link" href="https://grafana.com/">Grafana<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>)</li>
+<li>Implement logging solution (e.g., <a class="external-link" href="https://www.elastic.co/elastic-stack">ELK Stack<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>)</li>
+</ul>
+<p><img alt="Stack diagram showing physical, logical and containerized systems" src="../../images/drawio/simple-stack-1.drawio.svg" /></p>
+<h2 id="ongoing-thought-process">Ongoing Thought Process</h2>
+<p>I am spending a lot of time trying to figure out the best bootstrap dance here. In essence, I am asking myself the question: What is the most repeatable way to wrangle a pile of miscellaneous compute devices located all over the world into a consistent platform that can be built upon with confidence?</p>
+<h2 id="vms-as-building-blocks">VMs as Building Blocks</h2>
+<p>If the same VM image is running on two different hosts, it will behave similarly enough to be considered a stable building block. Whether two different instances running can be treated identically is a different question, ideally one that can be asked programmatically at runtime. For example, each will have different CPUs, RAM, GPU, and potentially other differences.</p>
+<p>As long as these differences can be introspected at runtime, I will consider a running VM a stable building block. Some services may require stable building blocks that are not available, but that is a different problem.</p>
+<h2 id="known-unknowns">Known Unknowns</h2>
+<p>These are questions or areas that I am aware I have not explored fully.</p>
+<ol>
+<li>Network-aware scheduling of workloads. I'm not sure how to handle where workloads are scheduled based on the performance of different network segments. For example, I'd like my Plex server to be running in the same building that I live in. This may be manual, or maybe there are <a class="external-link" href="https://scheduler-plugins.sigs.k8s.io/docs/kep/260-network-aware-scheduling/readme/">tools<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> to automate this scheduling and placement.</li>
+<li>Should I use Terraform or Pulumi IaC? How much of the stack should be managed by each of these tools? Should there be multiple instances of them to make a nested platform? For example, should I deploy a Vault instance to a VM and use that to store secrets used to deploy another Vault in a high-availability setup?</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li>Try out Terraform and Pulumi IaC and choose one for now.</li>
+<li>Build out the core infrastructure as described here.</li>
+<li>Work on the secondary core services. These will include a service mesh, API gateway, unified authentication server, and possibly a Kubernetes cluster for fun.</li>
+</ol>
+    </div>
+
+    <div class="navigation-links mt-5 p-3 d-flex justify-content-between align-items-center">
+        
+        <a href="../2024-09-24-deploying-a-basic-django-site-using-ansible" class="btn btn-outline-primary flex-grow-1 me-2 text-truncate" style="max-width: 48%;">&larr; Previous: Deploying A Basic Django Site using Ansible</a>
+        
+        
+    </div>
+
+</article>
+    <div class="giscus"></div>
+</div>
+
+    </main>
+
+    <footer class="mt-auto px-4 bg-theme pt-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="https://x.com/dancing_void" class="btn btn-outline-secondary btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="https://github.com/igutekunst" class="btn btn-outline-secondary btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class=" btn btn-outline-secondary btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+    
+
+    <script src="https://giscus.app/client.js"
+        data-repo="igutekunst/igutekunst.github.io"
+        data-repo-id="R_kgDOMqSlJQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOMqSlJc4CiInM"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+</body>
+</html>
