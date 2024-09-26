@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>When to choose CFEngine over Ansible, and other IaC Tool Questions | Programming Reality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../css/bundle.css" rel="stylesheet">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://isaac.cc/blog/2024-09-26-when-to-choose-cfengine-over-ansible,-and-other-iac-tool-questions">
+    <meta property="og:title" content="When to choose CFEngine over Ansible, and other IaC Tool Questions | Programming Reality">
+    <meta property="og:description" content="History of Infrastructure as Code
+Infrastructure as Code appears to be a natural evolution of computing and human thinking in general. In this post I explore the history of IaC tools and how to select then for a project.">
+    <meta property="og:image" content="https://isaac.cc/images/iac-shootoff.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://isaac.cc/blog/2024-09-26-when-to-choose-cfengine-over-ansible,-and-other-iac-tool-questions">
+    <meta property="twitter:title" content="When to choose CFEngine over Ansible, and other IaC Tool Questions | Programming Reality">
+    <meta property="twitter:description" content="History of Infrastructure as Code
+Infrastructure as Code appears to be a natural evolution of computing and human thinking in general. In this post I explore the history of IaC tools and how to select then for a project.">
+    <meta property="twitter:image" content="https://isaac.cc/images/iac-shootoff.png">
+
+    <!-- Existing meta tags and links -->
+    <script defer data-domain="isaac.cc" src="https://Hohyohe2eeZ2authaebae7cu0cah8eiX.dancingvoid.com/js/script.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "When to choose CFEngine over Ansible, and other IaC Tool Questions",
+        "url": "",
+        "datePublished": "2024-09-26 00:00:00",
+        "keywords": ["blog", "infrastructure", "ansible", "IaC"],
+        "author": {
+            "@type": "Person",
+            "name": "Isaac Harrison Gutekunst",
+            "url": "https://isaac.cc/about"
+        }
+    }
+    </script>
+
+
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-base-path="../../">
+    <nav class="navbar navbar-expand-lg navbar-theme bg-theme fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Programming Reality</a>
+            <input type="checkbox" id="navbarToggle" class="d-none">
+            <label for="navbarToggle" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="light-dropdown-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                </span>
+            </label>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../">Blog</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../about">About</a>
+                        </li>
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="../../contact">Contact</a>
+                        </li>
+                        
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="flex-grow-1 container mt-5 pt-5 mb-5">
+        
+<div class="container">
+<article class="article mx-auto article-wide">
+    <h1 class="mt-1 mb-1">When to choose CFEngine over Ansible, and other IaC Tool Questions</h1>
+    <p class="text-muted">
+        <small>Published on September 26, 2024</small>
+        | <small>Last updated on September 26, 2024</small>
+    </p>
+    
+    <div class="mb-4">
+        
+        <a href="../../tags/blog" class="badge bg-secondary text-decoration-none link-light me-1">#blog</a>
+        
+        <a href="../../tags/infrastructure" class="badge bg-secondary text-decoration-none link-light me-1">#infrastructure</a>
+        
+        <a href="../../tags/ansible" class="badge bg-secondary text-decoration-none link-light me-1">#ansible</a>
+        
+        <a href="../../tags/IaC" class="badge bg-secondary text-decoration-none link-light me-1">#IaC</a>
+        
+    </div>
+    
+    <div class="pt-4">
+    <p><img alt="Image of space battle with logos of IaC Tools scattered among spaceships" src="../../images/iac-shootoff.webp" /></p>
+<h1 id="history-of-infrastructure-as-code">History of Infrastructure as Code</h1>
+<p>Infrastructure as Code appears to be a natural evolution of computing and human thinking in general. In this post I explore the history of IaC tools and how to select then for a project.</p>
+<p>Parallels can be seen in early factories and the idea of <a class="external-link" href="https://en.wikipedia.org/wiki/Scientific_management">scientific management<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>, in chemical engineering, electronics, and software development in general. Each time a new tools is developed, the first people do so for the first time. With time "best practices" emerge from the many lessons learned through experimentation, intentional exploration and accidental mishaps.</p>
+<p>Infrastructure as Code can perhaps be traced back to earlier ideas of <a class="external-link" href="https://en.wikipedia.org/wiki/Scientific_management">configuration management<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></p>
+<p>The wikipedia definition is a good place to start:</p>
+<blockquote>
+<p><strong>Configuration management</strong> (<strong>CM</strong>) is a management process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life.</p>
+</blockquote>
+<p>Rather than existing as the abstract process, IaC tools are actualized implementations that can are instrumental in  <em>establishing and maintaining consistency of a product's performance..."</em> In this case, the product is the collection of computers under management, and the requirements ideally are input into the code describing the infrastructure, and the tools establish and maintain it using a variety of techniques.</p>
+<p>The chronology of IaC (Infrastructure as Code) and configuration management, CFEngine appeared on the scene far earlier than everything else. </p>
+<p>Puppet, Chef, and everything that followed them happened over a decade after the initial CFEngine release.</p>
+<p>Today all the tools mentioned below are still being used, though from what I can tell from Github Stars, Ansible and Terraform are winning developer popular culture mindshare. In addition, the <a class="external-link" href="https://www.jetbrains.com/lp/devecosystem-2023/devops/">JetBrains DevEcosystem 2023 Survey<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> and <a class="external-link" href="https://survey.stackoverflow.co/2023/#technology">StackOverflow 2023 Developer Survey<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> also show Terraform and Ansible far ahead of Chef, Puppet, and Pulumi. CFEngine is not listed.  I've included Kubernetes in this list, because although it is almost in a product class of its own, it does have an enormous amount of mindshare. In fact, none of the Graduating or Incubating <a class="external-link" href="https://www.cncf.io/projects/">Cloud Native Compute Foundation projects<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> are listed below, except for Kubernetes.</p>
+<h3 id="chronology">Chronology</h3>
+<table class="table table-dark">
+<thead>
+<tr>
+<th>Tool (with GitHub link)</th>
+<th>Author/Organization</th>
+<th>Initial Release Date</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="external-link" href="https://github.com/cfengine/core">CFEngine<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Mark Burgess</td>
+<td>1993</td>
+<td><a class="external-link" href="https://web.archive.org/web/20130723160143/http://www.iu.hio.no/~mark/papers/cfengine_history.pdf">University of Oslo<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/puppetlabs/puppet">Puppet<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Luke Kanies (Puppet Labs)</td>
+<td>2005</td>
+<td><a class="external-link" href="https://en.wikipedia.org/wiki/Puppet_(software)">Wikipedia<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/chef/chef">Chef<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Adam Jacob (OpsCode, now Progress)</td>
+<td>January 2009</td>
+<td><a class="external-link" href="https://www.chef.io/blog/announcing-chef">Chef<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/saltstack/salt">Salt Stack<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Thomas S. Hatch (SaltStack, now VMware)</td>
+<td>March 2011</td>
+<td><a class="external-link" href="https://github.com/saltstack/salt/commit/461f6f8989c1eb9f51a12af83f54927952146ed0">GitHub<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td>AWS CloudFormation</td>
+<td>Amazon Web Services</td>
+<td>February 2011</td>
+<td><a class="external-link" href="https://www.infoq.com/news/2011/02/aws-cloudformation/">InfoQ<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> <a class="external-link" href="https://www.infoworld.com/article/2275178/amazon-aims-to-make-it-easier-to-build-complex-clouds.html">Innfoworld<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/ansible/ansible">Ansible<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Michael DeHaan</td>
+<td>February 2012</td>
+<td>Ansible Blog via <a class="external-link" href="https://web.archive.org/web/20151023121850/http://www.ansible.com/blog/2013/12/08/the-origins-of-ansible">archive.org<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/hashicorp/terraform">Terraform<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Mitchell Hashimoto (HashiCorp)</td>
+<td>July 2014</td>
+<td><a class="external-link" href="https://www.redhat.com/en/topics/automation/understanding-ansible-vs-terraform-puppet-chef-and-salt">RedHat<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/kubernetes/kubernetes">Kubernetes<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Google (now Cloud Native Computing Foundation)</td>
+<td>June 2014</td>
+<td><a class="external-link" href="https://github.com/kubernetes/kubernetes/commit/a0abb3815755d6a77eed2d07bb0aa7d255e4e769">Github<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+<tr>
+<td><a class="external-link" href="https://github.com/pulumi/pulumi">Pulumi<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+<td>Joe Duffy (Pulumi, Inc.)</td>
+<td>June 2018</td>
+<td><a class="external-link" href="https://www.pulumi.com/about/">Pulumi<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a></td>
+</tr>
+</tbody>
+</table>
+<p>I'll add <a class="external-link" href="https://nixos.org">Nix<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> as an honorable mention for future exploration. </p>
+<p>I group these tools into 5 groups:</p>
+<ol>
+<li>Genesis: CFEngine</li>
+<li>Evolution 1: Puppet, Chef, Salt Stack, AWS CloudFormation</li>
+<li>Mature Tools: Ansible, Terraform</li>
+<li>Evolutionary Leap: Pulumi IaC</li>
+<li>Disruptive Different Approach: Kubernetes</li>
+</ol>
+<p>CFEngine paved new ground and can be considered the genesis of the Infrastructure as Code Era. It has proven to be a robust tool for advanced and specific use cases within important "enterprise" systems.</p>
+<p>Puppet and Chef entered the scene around the same time and appear to promote two different evolutions of the core idea. </p>
+<p>Puppet uses a declarative Ruby-based DSL with a client/server model. You declare the state you want, and the clients attempt to make it so.</p>
+<p>Chef uses a different Ruby-based DSL that is procedural. As such, more steps are required to ensure idempotency, that is, running the tool a second time should be the same as running it once. </p>
+<p>Ansible is similar to Chef in that it is procedural at its core and defaults to a "push" model, though it supports a "pull" model as well.</p>
+<p>Terraform somewhat belongs in its own category, as it is focused on provisioning infrastructure and less about configuring the services running on the infrastructure. Although Terraform modules can manage just about anything, the core focus is to deploy infrastructure such as containers, VMs, load balancers, firewalls, etc. </p>
+<p>Pulumi is a newer entrant that promises to make describing and configuring infrastructure easy and friendly using your programming language of choice. It has similar concepts to Terraform and can, in fact, <a class="external-link" href="https://www.pulumi.com/registry/packages/terraform-provider/installation-configuration/">import Terraform providers<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>.</p>
+<h1 id="choose-a-tool">Choose a Tool</h1>
+<p>How does one choose a tool? Is there a single tool that's best for all scenarios? Do I need to learn all of them?</p>
+<p>All these questions and more will be answered below.</p>
+<p>Rather than immediately answer the questions, I'll explain my thought process.</p>
+<p>First, I envision the final outcome of my project. Specifically, I am considering the requirements and architecture outlined in <a class="wikilink internal-link" href="../2024-09-25-personal-infrastructure-part-5:-core-supporting-services">Personal Infrastructure Part 5: Core Supporting Services</a>. </p>
+<p>Then I look at all the tools out there, using Claude, ChatGPT, and Google to gather information. I collect this information and build a mental model of what each tool actually does, what it's good at "on paper," and match that with my intentions/requirements for the project.</p>
+<p>In my research, I came across the concept of <a class="external-link" href="https://www.hashicorp.com/resources/what-is-mutable-vs-immutable-infrastructure">immutable infrastructure<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a>. This terminology may have been introduced by HashiCorp, but it applies to the IaC space as a whole. Specifically, both Terraform and Pulumi are designed around the idea that as much as possible should be immutable, that is, once it is created, it does not change. If a change is needed, an old resource should be removed, and a new one added to replace it. If this concept appeals to you, it seems these tools should be strongly considered for "Deploying Infrastructure." If I refer back to my article <a class="wikilink internal-link" href="../2024-09-25-personal-infrastructure-part-5:-core-supporting-services">Personal Infrastructure Part 5: Core Supporting Services</a> and consider my goals, the idea of immutable infrastructure makes a lot of sense.</p>
+<p>Specifically, I'd like to easily create and destroy infrastructure and be able to recreate it on new hardware after any kind of failure. This is only possible if configuration is stored somewhere, and becomes much easier if you know that applying the configuration always results in the hardware and software designated as "infrastructure" being in the same immutable state.</p>
+<p>With this in mind, I've made the following table:</p>
+<table class="table table-dark">
+<thead>
+<tr>
+<th>Tool</th>
+<th>Declarative vs Procedural</th>
+<th>Pull vs Push</th>
+<th>Language</th>
+<th>Main Goals</th>
+<th>GitHub Stars</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ansible</td>
+<td>Procedural</td>
+<td>Push</td>
+<td>YAML</td>
+<td>Configuration</td>
+<td><img alt="GitHub stars" src="https://img.shields.io/github/stars/ansible/ansible?style=social" /></td>
+</tr>
+<tr>
+<td>Terraform</td>
+<td>Declarative</td>
+<td>Push</td>
+<td>HCL</td>
+<td>Provisioning</td>
+<td><img alt="GitHub stars" src="https://img.shields.io/github/stars/hashicorp/terraform?style=social" /></td>
+</tr>
+<tr>
+<td>Pulumi</td>
+<td>Declarative</td>
+<td>Push</td>
+<td>Various</td>
+<td>Provisioning</td>
+<td><img alt="GitHub stars" src="https://img.shields.io/github/stars/pulumi/pulumi?style=social" /></td>
+</tr>
+<tr>
+<td>Chef</td>
+<td>Procedural</td>
+<td>Pull</td>
+<td>Ruby</td>
+<td>Configuration</td>
+<td><img alt="GitHub stars" src="https://img.shields.io/github/stars/chef/chef?style=social" /></td>
+</tr>
+<tr>
+<td>Puppet</td>
+<td>Declarative</td>
+<td>Pull</td>
+<td>Ruby</td>
+<td>Configuration</td>
+<td><img alt="GitHub stars" src="https://img.shields.io/github/stars/puppetlabs/puppet?style=social" /></td>
+</tr>
+<tr>
+<td>CFEngine</td>
+<td>Declarative</td>
+<td>Pull</td>
+<td>Custom Language</td>
+<td>Configuration</td>
+<td><img alt="GitHub stars" src="https://img.shields.io/github/stars/cfengine/core?style=social" /></td>
+</tr>
+</tbody>
+</table>
+<p>Table 1. Key attributes of leading IaC tools</p>
+<p>Looking at this table, a few things are clear to me:</p>
+<ol>
+<li>
+<p>CFEngine, Puppet, and Chef are far less popular. Terraform and Ansible are much more popular than the rest.</p>
+</li>
+<li>
+<p>Ansible could serve both my provisioning and configuration needs; however, from experience, I really don't like it. Idempotency and <em>declarative</em> Ansible projects appear to be more of an attempted "catch up" as projects like Puppet, Pulumi, Terraform, and CFEngine have clearly demonstrated the value of the declarative approach. However, it "feels" clunky and like an afterthought to me.</p>
+</li>
+<li>Terraform and Pulumi have a more limited scope. They both focus on the provisioning of architecture.</li>
+</ol>
+<p>Based on this, if I choose not to use Ansible, my choices for configuration are CFEngine, Chef, and Puppet. I'll eliminate CFEngine for being old and unpopular, and I'll eliminate Chef because I value declarative languages for defining infrastructure.</p>
+<p>Another common theme I've seen is that Ansible is considered easy, and these other tools are considered "more difficult." When I look more deeply at the criticism, however, it appears that the more "difficult" tools solve real problems, making their learning curve part of the "inherent complexity," whereas using Ansible may be easier at first, but those complexities don't go away just because your tool doesn't have native support for them. I've found myself hacking together strange Ansible roles, support scripts, and more just to get the basics to work.</p>
+<p>Check out my articles on my "Personal Infrastructure series" 1-4, as well as my article on Deploying Django for more information:</p>
+<ul>
+<li><a class="wikilink internal-link" href="../2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup">Personal Infrastructure Part 1: Introduction and Basic Ansible Setup</a></li>
+<li><a class="wikilink internal-link" href="../2024-09-14-personal-infrastructure-part-2:-setting-up-secret-storage-for-ansible">Personal Infrastructure Part 2: Setting up Secret Storage for Ansible</a></li>
+<li><a class="wikilink internal-link" href="../2024-09-15-personal-infrastructure-part-3:-quality-of-life-improvements-with-justfile-automation">Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation</a></li>
+<li><a class="wikilink internal-link" href="../2024-09-16-personal-infrastructure-part-4:-creating-and-storing-initial-secrets">Personal Infrastructure Part 4: Creating and Storing Initial Secrets</a></li>
+<li><a class="wikilink internal-link" href="../2024-09-24-deploying-a-basic-django-site-using-ansible">Deploying A Basic Django Site using Ansible</a></li>
+</ul>
+<p>To finish answering my questions, no I don't think I need to learn all the tools. I will try the tools that appeal to me and fit my requirements, and if they don't work out, I'll return to this article and try something else.</p>
+<h1 id="resources">Resources</h1>
+<p>Here are some biased, though informationally dense articles about these tools from two competitors: </p>
+<ul>
+<li><a class="external-link" href="https://www.pulumi.com/docs/iac/concepts/vs/chef-puppet-etc/">Chef, Puppet, Ansible, &amp; Salt vs Pulumi<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> - Pulumi </li>
+<li><a class="external-link" href="https://www.redhat.com/en/topics/automation/understanding-ansible-vs-terraform-puppet-chef-and-salt">Understanding Ansible, Terraform, Puppet, Chef, and Salt<svg class="bi bi-box-arrow-up-right" fill="currentColor" height="16" viewBox="0 0 16 16" width="16">
+  <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5" fill-rule="evenodd"></path>
+  <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z" fill-rule="evenodd"></path>
+</svg></a> - Red Hat</li>
+</ul>
+    </div>
+
+    <div class="navigation-links mt-5 p-3 d-flex justify-content-between align-items-center">
+        
+        <a href="../2024-09-25-personal-infrastructure-part-5:-core-supporting-services" class="btn btn-outline-primary flex-grow-1 me-2 text-truncate" style="max-width: 48%;">&larr; Previous: Personal Infrastructure Part 5: Core Supporting Services</a>
+        
+        
+    </div>
+
+</article>
+    <div class="giscus"></div>
+</div>
+
+    </main>
+
+    <footer class="mt-auto px-4 bg-theme pt-4">
+        <div class="container text-center">
+            <p>&copy;  Isaac Harrison Gutekunst. All rights reserved.</p>
+            <p>Exploring the intersection of programming, philosophy, and spirituality.</p>
+            <div class="mt-3">
+                <a href="https://x.com/dancing_void" class="btn btn-outline-secondary btn-sm me-2" aria-label="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518 3.3 3.3 0 0 0 1.447-1.817 6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429 3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218 3.2 3.2 0 0 1-.865.115 3 3 0 0 1-.614-.057 3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/>
+                </svg>
+                </a>
+                <a href="https://github.com/igutekunst" class="btn btn-outline-secondary btn-sm me-2" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </a>
+                <a href="../../rss/feed.xml" class=" btn btn-outline-secondary btn-sm" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5.5 12a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-3-8.5a1 1 0 0 1 1-1c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1-1-1m0 4a1 1 0 0 1 1-1 6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1-1-1"/>
+                </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/bundle.js"></script>
+    
+
+    <script src="https://giscus.app/client.js"
+        data-repo="igutekunst/igutekunst.github.io"
+        data-repo-id="R_kgDOMqSlJQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOMqSlJc4CiInM"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+</body>
+</html>

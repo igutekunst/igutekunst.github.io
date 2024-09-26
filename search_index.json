@@ -3,13 +3,13 @@
         "title": "nav",
         "url": "/nav",
         "tags": [],
-        "date": "2024-09-25"
+        "date": "2024-09-26"
     },
     {
         "title": "Contact Me",
         "url": "/contact",
         "tags": [],
-        "date": "2024-09-25"
+        "date": "2024-09-26"
     },
     {
         "title": "Deploying Django to Digital Ocean",
@@ -30,7 +30,7 @@
         "title": "About",
         "url": "/about",
         "tags": [],
-        "date": "2024-09-25"
+        "date": "2024-09-26"
     },
     {
         "title": "Welcome to Programming Reality",
@@ -77,6 +77,17 @@
         "date": "2024-09-14"
     },
     {
+        "title": "When to choose CFEngine over Ansible, and other IaC Tool Questions",
+        "url": "/blog/2024-09-26-when-to-choose-cfengine-over-ansible,-and-other-iac-tool-questions",
+        "tags": [
+            "blog",
+            "infrastructure",
+            "ansible",
+            "IaC"
+        ],
+        "date": "2024-09-26"
+    },
+    {
         "title": "Personal Infrastructure Part 1: Introduction and Basic Ansible Setup",
         "url": "/blog/2024-09-13-personal-infrastructure-part-1:-introduction-and-basic-ansible-setup",
         "tags": [
@@ -90,7 +101,7 @@
         "title": "index",
         "url": "/blog",
         "tags": [],
-        "date": "2024-09-25"
+        "date": "2024-09-26"
     },
     {
         "title": "Deploying A Basic Django Site using Ansible",
