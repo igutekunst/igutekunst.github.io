@@ -3,13 +3,13 @@
         "title": "nav",
         "url": "/nav",
         "tags": [],
-        "date": "2024-09-26"
+        "date": "2024-09-27"
     },
     {
         "title": "Contact Me",
         "url": "/contact",
         "tags": [],
-        "date": "2024-09-26"
+        "date": "2024-09-27"
     },
     {
         "title": "Deploying Django to Digital Ocean",
@@ -30,7 +30,7 @@
         "title": "About",
         "url": "/about",
         "tags": [],
-        "date": "2024-09-26"
+        "date": "2024-09-27"
     },
     {
         "title": "Welcome to Programming Reality",
@@ -101,7 +101,7 @@
         "title": "index",
         "url": "/blog",
         "tags": [],
-        "date": "2024-09-26"
+        "date": "2024-09-27"
     },
     {
         "title": "Deploying A Basic Django Site using Ansible",
@@ -159,5 +159,14 @@
             "homelab"
         ],
         "date": "2024-09-02"
+    },
+    {
+        "title": "How to Solve Any Problem and Win",
+        "url": "/blog/2024-09-27-how-to-solve-any-problem-and-win",
+        "tags": [
+            "blog",
+            "mental-models"
+        ],
+        "date": "2024-09-27"
     }
 ]
