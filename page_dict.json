@@ -36,7 +36,7 @@
         "publish": true,
         "url": "/",
         "path": "index.md",
-        "content": "Welcome to Programming Reality, a site about changing the nature of reality, one line of code at a time.\n\n\n\n## Featured Posts {: .featured-posts}\n - [[blog/12-how-to-solve-any-problem-and-win]]{: .featured-post}\n - [[blog/01-personal-infrastructure]]{: .featured-post}\n - [[blog/00-welcome]]{: .featured-post}"
+        "content": "Welcome to Programming Reality, a site about changing the nature of reality, one line of code at a time.\n\n\n\n## Featured Posts {: .featured-posts}\n - [[blog/12-how-to-solve-any-problem-and-win]]{: .featured-post}\n - [[blog/01-personal-infrastructure]]{: .featured-post}\n - [[blog/14-bringing-forth-new-ideas]]{: .featured-post}"
     },
     "/about": {
         "title": "About",
@@ -46,6 +46,18 @@
         "url": "/about",
         "path": "about.md",
         "content": "# About the Site\nThis is a personal website for Isaac Harrison Gutekunst. I've created this site to share my exploration of programming reality. The main focus of this is highly technical articles about computer programming, engineering, and [[philosophy]]. \n\n## Content\n\nThe site is structured primarily as a \"blog\", where I write about projects I am working on, or small pieces of knowledge I've acquired over time. \n\n## Technical Aspects of the Site\n\nThis site is hosted on Github Pages, and generated using a custom static site generator written in Python. It uses a customized [Bootstrap](https://getbootstrap.com) for CSS. It generates the entire site from a collection of markdown files, with the YAML [`frontmatter`](https://dpericich.medium.com/what-is-front-matter-and-how-is-it-used-to-create-dynamic-webpages-9d8dc053b457) and custom syntax being inflated into metadata and content on the site.\n\nI am aware the colors, typography, and layout can be improved. I decided it was more important to get the site out than to get it perfect. If you'd like to help with CSS, don't hesitate to [[contact|contact]] me."
+    },
+    "/blog/2024-09-28-how-conceive-great-ideas": {
+        "title": "How Conceive Great Ideas",
+        "date": "2024-09-28",
+        "tags": [
+            "blog",
+            "creativity"
+        ],
+        "publish": true,
+        "url": "/blog/2024-09-28-how-conceive-great-ideas",
+        "path": "blog/14-bringing-forth-new-ideas.md",
+        "content": "![A tranquil workspace surrounded by nature, symbolizing the creative process, with books and warm light inspiring reflection and ideas emerging from an abstract background.](/images/creative-process-1.webp)\n\n\n\n[Support me On Substack](https://programmingreality.substack.com)\n\n\n\nThe following is an excerpt of an essay I wrote to myself to guide my creative process. I share it with you with the hope it inspires insight into your own creative process.\n\nBefore an idea is conceived, the vessel must be ready to receive it. Some ideas arise as the synthesis of other ideas existing in consciousness. Other ideas seem to spring from the formless void into our awareness. The nature and quality of these ideas appear to be correlated to the nature and quality of the mind that serves as the vessel, and the environment surrounding this mind. If someone finds themselves in a life or death situation, the ideas emerging will likely be those that aid in survival. Similarly, if one is at work, the ideas arising are likely those that will further the objective of work.\n\nTherefore, before calling forth an idea from the depth of your consciousness, bring awareness to your inner and outer environment and take care to arrange your environment in such a way that the ideas that arise in response to it are of the kind and nature you desire.\n\nA desert will only support some kinds of life, while a rainforest will support others.\n\nFor example, if you'd like to think of a fun project to improve the quality of your life at home, take some time steeping in this environment. Pay attention to your life, and how your living space affects it. With time, in response to your attention, an idea will present itself. Perhaps a particular wall is calling out for some artwork? Maybe the sink is a bit old and needs replacing.\n\nLarger ideas require a larger environment to grow. If you'd like to change the world, you must first steep yourself in it. Only then will the light of consciousness bring forth that which flows naturally.\n\nTo be continued..."
     },
     "/blog/2024-08-27-welcome-to-programming-reality": {
         "title": "Welcome to Programming Reality",
