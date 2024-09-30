@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Pyramid -->
+  <polygon points="50,100 100,25 150,100" fill="none" stroke="black" stroke-width="2"/>
+  <text x="100" y="120" text-anchor="middle" font-size="12">Pyramid</text>
+  
+  <!-- Inverted Pyramid -->
+  <polygon points="200,25 250,100 300,25" fill="none" stroke="black" stroke-width="2"/>
+  <text x="250" y="120" text-anchor="middle" font-size="12">Inverted Pyramid</text>
+  
+  <!-- Hourglass -->
+  <path d="M350,25 L400,62.5 L350,100 L400,62.5 L450,25 M350,100 L450,100" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="120" text-anchor="middle" font-size="12">Hourglass</text>
+  
+  <!-- Network -->
+  <circle cx="550" cy="62.5" r="3" fill="black"/>
+  <line x1="550" y1="62.5" x2="525" y2="37.5" stroke="black" stroke-width="2"/>
+  <line x1="550" y1="62.5" x2="575" y2="37.5" stroke="black" stroke-width="2"/>
+  <line x1="550" y1="62.5" x2="525" y2="87.5" stroke="black" stroke-width="2"/>
+  <line x1="550" y1="62.5" x2="575" y2="87.5" stroke="black" stroke-width="2"/>
+  <text x="550" y="120" text-anchor="middle" font-size="12">Network</text>
+  
+  <!-- Expanding Sphere -->
+  <circle cx="700" cy="62.5" r="30" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="700" cy="62.5" r="20" fill="none" stroke="black" stroke-width="2"/>
+  <circle cx="700" cy="62.5" r="10" fill="none" stroke="black" stroke-width="2"/>
+  <text x="700" y="120" text-anchor="middle" font-size="12">Expanding Sphere</text>
+  
+  <!-- Radiating Lines -->
+  <line x1="100" y1="200" x2="50" y2="150" stroke="black" stroke-width="2"/>
+  <line x1="100" y1="200" x2="150" y2="150" stroke="black" stroke-width="2"/>
+  <line x1="100" y1="200" x2="100" y2="150" stroke="black" stroke-width="2"/>
+  <line x1="100" y1="200" x2="75" y2="175" stroke="black" stroke-width="2"/>
+  <line x1="100" y1="200" x2="125" y2="175" stroke="black" stroke-width="2"/>
+  <text x="100" y="220" text-anchor="middle" font-size="12">Radiating Lines</text>
+  
+  <!-- Constellation -->
+  <circle cx="250" cy="175" r="3" fill="black"/>
+  <circle cx="275" cy="200" r="3" fill="black"/>
+  <circle cx="225" cy="200" r="3" fill="black"/>
+  <line x1="250" y1="175" x2="275" y2="200" stroke="black" stroke-width="1"/>
+  <line x1="250" y1="175" x2="225" y2="200" stroke="black" stroke-width="1"/>
+  <text x="250" y="220" text-anchor="middle" font-size="12">Constellation</text>
+  
+  <!-- Funnel -->
+  <path d="M375,150 L425,150 L410,200 L390,200 Z" fill="none" stroke="black" stroke-width="2"/>
+  <text x="400" y="220" text-anchor="middle" font-size="12">Funnel</text>
+  
+  <!-- Layered Cake -->
+  <rect x="525" y="150" width="50" height="10" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="520" y="160" width="60" height="15" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="515" y="175" width="70" height="20" fill="none" stroke="black" stroke-width="2"/>
+  <text x="550" y="220" text-anchor="middle" font-size="12">Layered Cake</text>
+  
+  <!-- Spotlight -->
+  <path d="M675,150 Q700,175 725,150 Q700,200 675,150" fill="none" stroke="black" stroke-width="2"/>
+  <line x1="700" y1="150" x2="700" y2="200" stroke="black" stroke-width="2"/>
+  <text x="700" y="220" text-anchor="middle" font-size="12">Spotlight</text>
+  
+  <!-- Split Screen -->
+  <rect x="50" y="250" width="100" height="75" fill="none" stroke="black" stroke-width="2"/>
+  <line x1="100" y1="250" x2="100" y2="325" stroke="black" stroke-width="2"/>
+  <text x="100" y="345" text-anchor="middle" font-size="12">Split Screen</text>
+  
+  <!-- Web -->
+  <circle cx="250" cy="287.5" r="30" fill="none" stroke="black" stroke-width="1"/>
+  <line x1="250" y1="257.5" x2="250" y2="317.5" stroke="black" stroke-width="1"/>
+  <line x1="220" y1="287.5" x2="280" y2="287.5" stroke="black" stroke-width="1"/>
+  <line x1="228" y1="265.5" x2="272" y2="309.5" stroke="black" stroke-width="1"/>
+  <line x1="228" y1="309.5" x2="272" y2="265.5" stroke="black" stroke-width="1"/>
+  <text x="250" y="345" text-anchor="middle" font-size="12">Web</text>
+  
+  <!-- Fractal -->
+  <rect x="375" y="250" width="50" height="50" fill="none" stroke="black" stroke-width="2"/>
+  <rect x="375" y="250" width="25" height="25" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="400" y="275" width="25" height="25" fill="none" stroke="black" stroke-width="1"/>
+  <rect x="375" y="250" width="12.5" height="12.5" fill="none" stroke="black" stroke-width="0.5"/>
+  <rect x="400" y="275" width="12.5" height="12.5" fill="none" stroke="black" stroke-width="0.5"/>
+  <text x="400" y="345" text-anchor="middle" font-size="12">Fractal</text>
+</svg>

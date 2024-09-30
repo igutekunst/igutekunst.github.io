@@ -3,13 +3,13 @@
         "title": "nav",
         "url": "/nav",
         "tags": [],
-        "date": "2024-09-28"
+        "date": "2024-09-29"
     },
     {
         "title": "Contact Me",
         "url": "/contact",
         "tags": [],
-        "date": "2024-09-28"
+        "date": "2024-09-29"
     },
     {
         "title": "Deploying Django to Digital Ocean",
@@ -30,7 +30,7 @@
         "title": "About",
         "url": "/about",
         "tags": [],
-        "date": "2024-09-28"
+        "date": "2024-09-29"
     },
     {
         "title": "How Conceive Great Ideas",
@@ -61,6 +61,16 @@
             "ansible"
         ],
         "date": "2024-09-22"
+    },
+    {
+        "title": "How to Solve Any Problem and Win",
+        "url": "/blog/2024-09-29-how-to-solve-any-problem-and-win",
+        "tags": [
+            "blog",
+            "introspection",
+            "writing"
+        ],
+        "date": "2024-09-29"
     },
     {
         "title": "Personal Infrastructure Part 3: Quality of Life Improvements with Justfile Automation",
@@ -110,7 +120,7 @@
         "title": "index",
         "url": "/blog",
         "tags": [],
-        "date": "2024-09-28"
+        "date": "2024-09-29"
     },
     {
         "title": "Deploying A Basic Django Site using Ansible",

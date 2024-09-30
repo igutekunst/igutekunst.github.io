@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 800 600">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-1, .cls-3, .cls-4, .cls-5, .cls-6 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #3c97ff;
+      }
+
+      .cls-7 {
+        fill: #e0e0e0;
+        font-family: ArialMT, Arial;
+        font-size: 12px;
+        isolation: isolate;
+      }
+
+      .cls-3 {
+        stroke-width: 2px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke: #3c97ff;
+      }
+
+      .cls-5 {
+        stroke-width: .5px;
+      }
+
+      .cls-6 {
+        stroke-width: 1.7px;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d=""/>
+  <polygon class="cls-3" points="50 100 100 25 150 100 50 100"/>
+  <text class="cls-7" transform="translate(78 120)"><tspan x="0" y="0">Pyramid</tspan></text>
+  <polygon class="cls-3" points="200 25 250 100 300 25 200 25"/>
+  <text class="cls-7" transform="translate(204.6 120)"><tspan x="0" y="0">Inverted Pyramid</tspan></text>
+  <path class="cls-3" d="M350,25c16.7,25,16.7,50,0,75h100c-16.7-25-16.7-50,0-75h-100Z"/>
+  <line class="cls-4" x1="350" y1="62.5" x2="450" y2="62.5"/>
+  <text class="cls-7" transform="translate(373 120)"><tspan x="0" y="0">Hourglass</tspan></text>
+  <circle class="cls-2" cx="550" cy="62.5" r="3"/>
+  <line class="cls-3" x1="550" y1="62.5" x2="525" y2="37.5"/>
+  <line class="cls-3" x1="550" y1="62.5" x2="575" y2="37.5"/>
+  <line class="cls-3" x1="550" y1="62.5" x2="525" y2="87.5"/>
+  <line class="cls-3" x1="550" y1="62.5" x2="575" y2="87.5"/>
+  <text class="cls-7" transform="translate(528 120)"><tspan x="0" y="0">Network</tspan></text>
+  <circle class="cls-3" cx="700" cy="62.5" r="30"/>
+  <circle class="cls-3" cx="700" cy="62.5" r="20"/>
+  <circle class="cls-3" cx="700" cy="62.5" r="10"/>
+  <text class="cls-7" transform="translate(650.6 120)"><tspan x="0" y="0">Expanding Sphere</tspan></text>
+  <line class="cls-3" x1="100" y1="200" x2="50" y2="150"/>
+  <line class="cls-3" x1="100" y1="200" x2="150" y2="150"/>
+  <line class="cls-3" x1="100" y1="200" x2="100" y2="150"/>
+  <line class="cls-3" x1="100" y1="200" x2="75" y2="175"/>
+  <line class="cls-3" x1="100" y1="200" x2="125" y2="175"/>
+  <text class="cls-7" transform="translate(58.6 220)"><tspan x="0" y="0">Radiating Lines</tspan></text>
+  <circle class="cls-2" cx="250" cy="175" r="3"/>
+  <circle class="cls-2" cx="275" cy="200" r="3"/>
+  <circle class="cls-2" cx="225" cy="200" r="3"/>
+  <line class="cls-4" x1="250" y1="175" x2="275" y2="200"/>
+  <line class="cls-4" x1="250" y1="175" x2="225" y2="200"/>
+  <text class="cls-7" transform="translate(215.3 220)"><tspan x="0" y="0">Constellation</tspan></text>
+  <path class="cls-3" d="M375,150h50l-15,50h-20l-15-50Z"/>
+  <text class="cls-7" transform="translate(381.7 220)"><tspan x="0" y="0">Funnel</tspan></text>
+  <rect class="cls-3" x="525" y="150" width="50" height="10"/>
+  <rect class="cls-3" x="520" y="160" width="60" height="15"/>
+  <rect class="cls-3" x="515" y="175" width="70" height="20"/>
+  <text class="cls-7" transform="translate(512.6 220)"><tspan x="0" y="0">Layered Cake</tspan></text>
+  <path class="cls-3" d="M675,200h50l-25-50-25,50Z"/>
+  <line class="cls-6" x1="700" y1="150" x2="700" y2="132.5"/>
+  <circle class="cls-2" cx="700" cy="132.5" r="5"/>
+  <text class="cls-7" transform="translate(676.7 220)"><tspan x="0" y="0">Spotlight</tspan></text>
+  <rect class="cls-3" x="50" y="250" width="100" height="75"/>
+  <line class="cls-3" x1="100" y1="250" x2="100" y2="325"/>
+  <text class="cls-7" transform="translate(67.7 345)"><tspan x="0" y="0">Split Screen</tspan></text>
+  <circle class="cls-4" cx="250" cy="287.5" r="30"/>
+  <line class="cls-4" x1="250" y1="257.5" x2="250" y2="317.5"/>
+  <line class="cls-4" x1="220" y1="287.5" x2="280" y2="287.5"/>
+  <line class="cls-4" x1="228" y1="265.5" x2="272" y2="309.5"/>
+  <line class="cls-4" x1="228" y1="309.5" x2="272" y2="265.5"/>
+  <text class="cls-7" transform="translate(237.8 345)"><tspan x="0" y="0">Web</tspan></text>
+  <rect class="cls-3" x="375" y="250" width="50" height="50"/>
+  <rect class="cls-4" x="375" y="250" width="25" height="25"/>
+  <rect class="cls-4" x="400" y="275" width="25" height="25"/>
+  <rect class="cls-5" x="375" y="250" width="12.5" height="12.5"/>
+  <rect class="cls-5" x="400" y="275" width="12.5" height="12.5"/>
+  <text class="cls-7" transform="translate(381.7 345)"><tspan x="0" y="0">Fractal</tspan></text>
+  <path class="cls-1" d=""/>
+</svg>
